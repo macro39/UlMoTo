@@ -9,6 +9,7 @@
     <string name="label_search_record">Vyhľadanie záznamu</string>
     <string name="label_button_add_record">Pridaj záznam</string>
     <string name="label_choose_image">Vyber obrázok</string>
-    <string name="label_settings">Nastavenia</string>
+    <string name="label_reload">Znovu načítať</string>
     <string name="label_detail">Detail</string>
+    <string name="label_search">Vyhľadaj</string>
 </resources>

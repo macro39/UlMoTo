@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun notifyDataSetChanged() {
-        (currentFragment as SearchFragment).reloadRecordsFromDatabase()
+        (currentFragment as SearchFragment).reloadAllRecordsFromDatabase()
         dialogFragment?.dismiss()
         dialogFragment = null
     }

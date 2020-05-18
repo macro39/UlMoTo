@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
     tools:context=".search.SearchFragment">
 
@@ -33,32 +34,41 @@
                 android:layout_marginRight="15sp"
                 android:orientation="vertical">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_search_first_name"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup_search_filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_first_name"
-                    android:textAlignment="center" />
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:selectionRequired="true"
+                    app:checkedChip="@+id/chip_search_licence_number">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_search_last_name"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_last_name"
-                    android:textAlignment="center" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_search_first_name"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50sp"
+                        android:gravity="center"
+                        android:text="@string/label_first_name"
+                        android:textAlignment="center" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_search_licence_number"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_licence_number"
-                    android:textAlignment="center" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_search_last_name"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50sp"
+                        android:gravity="center"
+                        android:text="@string/label_last_name"
+                        android:textAlignment="center" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_search_licence_number"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50sp"
+                        android:gravity="center"
+                        android:text="@string/label_licence_number"
+                        android:textAlignment="center" />
+                </com.google.android.material.chip.ChipGroup>
             </LinearLayout>
 
             <LinearLayout
@@ -67,29 +77,35 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/editText_search_first_name"
+                    android:id="@+id/editText_search_filter"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:gravity="center" />
 
-                <EditText
-                    android:id="@+id/editText_search_last_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:gravity="center" />
+<!--                <EditText-->
+<!--                    android:id="@+id/editText_search_first_name"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:gravity="center" />-->
 
-                <EditText
-                    android:id="@+id/editText_search_technical_number"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:gravity="center" />
+<!--                <EditText-->
+<!--                    android:id="@+id/editText_search_last_name"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:gravity="center" />-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/editText_search_technical_number"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50sp"-->
+<!--                    android:gravity="center" />-->
 
                 <Button
                     android:id="@+id/button_search"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:gravity="center"
-                    android:text="Vyhľadaj" />
+                    android:text="@string/label_search" />
             </LinearLayout>
         </LinearLayout>
 

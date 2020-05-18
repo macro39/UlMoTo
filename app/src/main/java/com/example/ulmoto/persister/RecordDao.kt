@@ -16,4 +16,13 @@ interface RecordDao {
 
     @Query("SELECT * FROM record")
     suspend fun getAll(): List<RecordEntity>
+
+    @Query("SELECT * FROM record WHERE firstName LIKE '%' || :firstName || '%'")
+    suspend fun getAllByFirstName(firstName: String): List<RecordEntity>
+
+    @Query("SELECT * FROM record WHERE lastName LIKE '%' || :lastName || '%'")
+    suspend fun getAllByLastName(lastName: String): List<RecordEntity>
+
+    @Query("SELECT * FROM record WHERE licenceNumber LIKE '%' || :licenceNumber || '%'")
+    suspend fun getAllByLicenceNumber(licenceNumber: String): List<RecordEntity>
 }
