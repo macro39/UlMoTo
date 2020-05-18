@@ -2,7 +2,7 @@
     <string name="app_name">UlMoTo</string>
     <string name="label_first_name">Meno</string>
     <string name="label_last_name">Priezvisko</string>
-    <string name="label_registration_book_number">Č. technického preukazu</string>
+    <string name="label_licence_number">EČV</string>
     <string name="lable_add_record">Pridanie záznamu</string>
     <string name="label_number_of_records">"Počet výsledkov: "</string>
     <string name="label_no_records">Źiadne výsledky</string>
@@ -10,4 +10,5 @@
     <string name="label_button_add_record">Pridaj záznam</string>
     <string name="label_choose_image">Vyber obrázok</string>
     <string name="label_settings">Nastavenia</string>
+    <string name="label_detail">Detail</string>
 </resources>

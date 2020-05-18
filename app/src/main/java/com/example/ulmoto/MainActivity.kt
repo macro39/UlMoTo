@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         database = AppDatabase.create(this)
 
         GlobalScope.launch(Dispatchers.IO) {
-            database.recordDao().insert(RecordEntity(firstName = "SKUSKA", lastName = "SKUSKA"))
-            database.recordDao().insert(RecordEntity(firstName = "SKUSKA2", lastName = "SKUSKA2"))
+            database.recordDao().insert(RecordEntity(firstName = "Adolf", lastName = "Hitler", licenceNumber = "LV-145EG"))
+            database.recordDao().insert(RecordEntity(firstName = "Janko", lastName = "Tribula", licenceNumber = "BA-420KU"))
         }
 
         fab.setOnClickListener { view ->
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun notifyDataSetChanged() {
-        (currentFragment as SearchFragment).updateListView()
+        (currentFragment as SearchFragment).reloadRecordsFromDatabase()
         dialogFragment?.dismiss()
         dialogFragment = null
     }

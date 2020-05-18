@@ -1,11 +1,10 @@
 package com.example.ulmoto.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
 import com.example.ulmoto.persister.RecordEntity
@@ -21,13 +20,11 @@ import kotlinx.coroutines.withContext
 class SearchFragment : Fragment() {
 
     private var records: List<RecordEntity> = arrayListOf()
-
-    private val names = arrayListOf<String>()
-    private lateinit var adapter: ArrayAdapter<String>
+    private lateinit var adapter: RecordAdapter
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
@@ -35,32 +32,44 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        progressBar_search.visibility = View.VISIBLE
+        reloadRecordsFromDatabase()
 
-        updateListView()
+        button_search.setOnClickListener {
+            filterData()
+        }
 //        view.findViewById<Button>(R.id.button_first).setOnClickListener {
 //            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
 //        }
     }
 
-    fun updateListView() {
+    private fun filterData() {
+    }
+
+    fun reloadRecordsFromDatabase() {
         GlobalScope.launch(Dispatchers.IO) {
             records = (activity as MainActivity).database.recordDao().getAll()
 
             withContext(Dispatchers.Main) {
-                progressBar_search.visibility = View.GONE
-
-                names.clear()
-
-                for (record in records) {
-                    names.add(record.lastName)
-                }
-
-                adapter = ArrayAdapter(this@SearchFragment.requireContext(),
-                    R.layout.listview_search_item, names)
-
-                listView_search.adapter = adapter
+                updateListViewAdapter()
             }
         }
+    }
+
+    private fun updateListViewAdapter() {
+        progressBar_search.visibility = View.VISIBLE
+
+        listView_search.adapter = null
+
+        adapter = RecordAdapter(
+            this@SearchFragment.requireActivity(),
+            this@SearchFragment.records as ArrayList<RecordEntity>
+        )
+
+        textView_search_results_count.text =
+            "${getString(R.string.label_number_of_records)}${records.size}"
+
+        listView_search.adapter = adapter
+
+        progressBar_search.visibility = View.GONE
     }
 }

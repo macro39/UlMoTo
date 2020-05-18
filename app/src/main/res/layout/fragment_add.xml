@@ -49,7 +49,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50sp"
                     android:gravity="center"
-                    android:text="@string/label_registration_book_number"
+                    android:text="@string/label_licence_number"
                     android:textAlignment="center" />
             </LinearLayout>
 
@@ -71,7 +71,7 @@
                     android:gravity="center" />
 
                 <EditText
-                    android:id="@+id/editText_add_technical_number"
+                    android:id="@+id/editText_add_licence_number"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
                     android:gravity="center" />

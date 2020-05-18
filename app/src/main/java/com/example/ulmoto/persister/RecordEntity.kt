@@ -13,7 +13,7 @@ data class RecordEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val firstName: String = "",
     val lastName: String = "",
-    val registrationBookNumber: String = "",
+    val licenceNumber: String = "",
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val imageFirst: ByteArray? = null,
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val imageSecond: ByteArray? = null
 )

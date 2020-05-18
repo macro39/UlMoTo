@@ -45,7 +45,8 @@ class AddDialog : DialogFragment() {
                 (context as MainActivity).database.recordDao().insert(
                     RecordEntity(
                         firstName = editText_add_first_name.text.toString(),
-                        lastName = editText_add_last_name.text.toString()
+                        lastName = editText_add_last_name.text.toString(),
+                        licenceNumber = editText_add_licence_number.text.toString()
                     )
                 )
 

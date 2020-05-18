@@ -52,12 +52,12 @@
                     android:textAlignment="center" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_search_location"
+                    android:id="@+id/chip_search_licence_number"
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="50sp"
                     android:gravity="center"
-                    android:text="@string/label_registration_book_number"
+                    android:text="@string/label_licence_number"
                     android:textAlignment="center" />
             </LinearLayout>
 
