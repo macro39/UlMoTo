@@ -12,4 +12,5 @@
     <string name="label_reload">Znovu načítať</string>
     <string name="label_detail">Detail</string>
     <string name="label_search">Vyhľadaj</string>
+    <string name="label_capture_photo">Nasnímať</string>
 </resources>
