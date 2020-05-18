@@ -1,4 +1,4 @@
-package com.example.ulmoto.room
+package com.example.ulmoto.persister
 
 import androidx.room.Dao
 import androidx.room.Insert

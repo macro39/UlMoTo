@@ -1,4 +1,4 @@
-package com.example.ulmoto.room
+package com.example.ulmoto.persister
 
 import android.content.Context
 import androidx.room.Database

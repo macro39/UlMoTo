@@ -11,8 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.ulmoto.room.AppDatabase
-import com.example.ulmoto.room.RecordEntity
+import com.example.ulmoto.persister.AppDatabase
+import com.example.ulmoto.persister.RecordEntity
+import com.example.ulmoto.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_add.view.*
 import kotlinx.coroutines.Dispatchers
@@ -20,10 +21,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
+/**
+ * Created by Kamil Macek on 17.5.2020.
+ */
 class MainActivity : AppCompatActivity() {
 
-    lateinit var currentFragment: Fragment
+    private lateinit var currentFragment: Fragment
 
     lateinit var database: AppDatabase
 
@@ -80,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
-    //handle requested permission result
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -88,20 +90,17 @@ class MainActivity : AppCompatActivity() {
     ) {
         when (requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] ==
+                if (grantResults.isNotEmpty() && grantResults[0] ==
                     PackageManager.PERMISSION_GRANTED
                 ) {
-                    //permission from popup granted
                     pickImageFromGallery()
                 } else {
-                    //permission from popup denied
-                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Povolenie nepridané", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    //handle result of picked image
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
@@ -109,27 +108,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.menu_main, menu)
-//        return true
-//    }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        return when (item.itemId) {
-//            R.id.action_settings -> true
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
-
     companion object {
-        //image pick code
         private val IMAGE_PICK_CODE = 1000;
-
-        //Permission code
         private val PERMISSION_CODE = 1001;
     }
 

@@ -1,4 +1,4 @@
-package com.example.ulmoto.room
+package com.example.ulmoto.persister
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

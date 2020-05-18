@@ -1,4 +1,4 @@
-package com.example.ulmoto
+package com.example.ulmoto.search
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import com.example.ulmoto.room.RecordEntity
+import com.example.ulmoto.MainActivity
+import com.example.ulmoto.R
+import com.example.ulmoto.persister.RecordEntity
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -14,14 +16,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * A simple [Fragment] subclass as the default destination in the navigation.
+ * Created by Kamil Macek on 17.5.2020.
  */
 class SearchFragment : Fragment() {
 
     private var records: List<RecordEntity> = arrayListOf()
 
-    val names = arrayListOf<String>()
-    lateinit var adapter: ArrayAdapter<String>
+    private val names = arrayListOf<String>()
+    private lateinit var adapter: ArrayAdapter<String>
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +56,8 @@ class SearchFragment : Fragment() {
                     names.add(record.lastName)
                 }
 
-                adapter = ArrayAdapter(this@SearchFragment.requireContext(), R.layout.listview_search_item, names)
+                adapter = ArrayAdapter(this@SearchFragment.requireContext(),
+                    R.layout.listview_search_item, names)
 
                 listView_search.adapter = adapter
             }
