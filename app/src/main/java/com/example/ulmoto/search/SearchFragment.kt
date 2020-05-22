@@ -48,7 +48,7 @@ class SearchFragment : Fragment() {
             when (checkedChip.id) {
                 R.id.chip_search_first_name -> message.append("mena")
                 R.id.chip_search_last_name -> message.append("priezviska")
-                R.id.chip_search_licence_number -> message.append("EČV")
+                R.id.chip_search_licence_plate -> message.append("EČV")
             }
 
             Toast.makeText(
@@ -100,9 +100,9 @@ class SearchFragment : Fragment() {
                     records = (activity as MainActivity).database.recordDao()
                         .getAllByLastName(editText_search_filter.text.toString())
                 }
-                R.id.chip_search_licence_number -> {
+                R.id.chip_search_licence_plate -> {
                     records = (activity as MainActivity).database.recordDao()
-                        .getAllByLicenceNumber(editText_search_filter.text.toString())
+                        .getAllByLicencePlate(editText_search_filter.text.toString())
                 }
             }
 

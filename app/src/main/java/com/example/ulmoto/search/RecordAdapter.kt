@@ -20,12 +20,12 @@ class RecordAdapter(private var activity: Activity, private var records: ArrayLi
 
     private class ViewHolder(row: View?) {
         var mTextViewFullName: TextView? = null
-        var mTextViewLicenceNumber: TextView? = null
+        var mTextViewLicencePlate: TextView? = null
         var mButtonDetail: Button? = null
 
         init {
             this.mTextViewFullName = row?.findViewById(R.id.textView_search_list_full_name)
-            this.mTextViewLicenceNumber = row?.findViewById(R.id.textView_search_list_licence_number)
+            this.mTextViewLicencePlate = row?.findViewById(R.id.textView_search_list_licence_plate)
             this.mButtonDetail = row?.findViewById(R.id.button_search_list_detail)
         }
     }
@@ -46,7 +46,7 @@ class RecordAdapter(private var activity: Activity, private var records: ArrayLi
         val record = records[position]
 
         viewHolder.mTextViewFullName?.text = record.firstName + " " + record.lastName
-        viewHolder.mTextViewLicenceNumber?.text = record.licenceNumber
+        viewHolder.mTextViewLicencePlate?.text = record.licencePlate
 
         viewHolder.mButtonDetail?.setOnClickListener {
             Toast.makeText(activity, "Detail", Toast.LENGTH_SHORT).show()

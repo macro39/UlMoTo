@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
         database = AppDatabase.create(this)
 
         GlobalScope.launch(Dispatchers.IO) {
-            database.recordDao().insert(RecordEntity(firstName = "Adolf", lastName = "Hitler", licenceNumber = "LV-145EG"))
-            database.recordDao().insert(RecordEntity(firstName = "Janko", lastName = "Tribula", licenceNumber = "BA-420KU"))
+            database.recordDao().insert(RecordEntity(firstName = "Adolf", lastName = "Hitler", licencePlate = "LV-145EG"))
+            database.recordDao().insert(RecordEntity(firstName = "Janko", lastName = "Tribula", licencePlate = "BA-420KU"))
         }
 
         fab.setOnClickListener { view ->

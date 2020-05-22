@@ -70,7 +70,7 @@ class AddDialog : DialogFragment() {
         button_add.setOnClickListener {
             editText_add_first_name.error = null
             editText_add_last_name.error = null
-            editText_add_licence_number.error = null
+            editText_add_licence_plate.error = null
 
             if (editText_add_first_name.text.trim().isEmpty()) {
                 editText_add_first_name.error = "Vyplňte meno!"
@@ -84,11 +84,11 @@ class AddDialog : DialogFragment() {
                 return@setOnClickListener
             }
 
-            if (editText_add_licence_number.getText(true).trim()
-                    .isEmpty() || editText_add_licence_number.getText(true).trim().count() != 7
+            if (editText_add_licence_plate.getText(true).trim()
+                    .isEmpty() || editText_add_licence_plate.getText(true).trim().count() != 7
             ) {
-                editText_add_licence_number.error = "Vyplňte EĆV!"
-                editText_add_licence_number.requestFocus()
+                editText_add_licence_plate.error = "Vyplňte EĆV!"
+                editText_add_licence_plate.requestFocus()
                 return@setOnClickListener
             }
 
@@ -99,7 +99,7 @@ class AddDialog : DialogFragment() {
 
                 alertDialog.setPositiveButton("Áno") { dialog, _ ->
                     dialog.dismiss()
-                    addRecord()
+                    checkLicencePlateAlreadyAdded()
                 }
 
                 alertDialog.setNegativeButton("Nie") { dialog, _ ->
@@ -109,7 +109,7 @@ class AddDialog : DialogFragment() {
 
                 alertDialog.show()
             } else {
-                addRecord()
+                checkLicencePlateAlreadyAdded()
             }
         }
     }
@@ -123,11 +123,41 @@ class AddDialog : DialogFragment() {
         dialog!!.window!!.attributes = params as android.view.WindowManager.LayoutParams
     }
 
+    private fun checkLicencePlateAlreadyAdded() = GlobalScope.launch(Dispatchers.IO) {
+        val licencePlate = editText_add_licence_plate.getText(false).toString().toUpperCase()
+
+        val sameRecords =
+            (context as MainActivity).database.recordDao().getAllByLicencePlate(licencePlate)
+
+        if (sameRecords.isNotEmpty()) {
+            withContext(Dispatchers.Main) {
+                val alertDialog = AlertDialog.Builder(this@AddDialog.requireContext())
+                alertDialog.setTitle("Upozornenie")
+                alertDialog.setMessage("Záznam s EČV vozidla $licencePlate už existuje. Prajete si pokračovať a uložiť tento záznam?")
+
+                alertDialog.setPositiveButton("Áno") { dialog, _ ->
+                    dialog.dismiss()
+                    addRecord()
+                }
+
+                alertDialog.setNegativeButton("Nie") { dialog, _ ->
+                    dialog.dismiss()
+                    editText_add_licence_plate.requestFocus()
+                    return@setNegativeButton
+                }
+
+                alertDialog.show()
+            }
+        } else {
+            addRecord()
+        }
+    }
+
     private fun addRecord() = GlobalScope.launch(Dispatchers.IO) {
         val newRecord = RecordEntity(
             firstName = editText_add_first_name.text.toString().capitalize(),
             lastName = editText_add_last_name.text.toString().capitalize(),
-            licenceNumber = editText_add_licence_number.getText(false).toString().toUpperCase()
+            licencePlate = editText_add_licence_plate.getText(false).toString().toUpperCase()
         )
 
         if (imagePathList.size != 0) {
