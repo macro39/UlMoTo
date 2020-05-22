@@ -23,12 +23,12 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.szagurskii.patternedtextwatcher.PatternedTextWatcher
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.InputStream
 
 
 /**
@@ -37,6 +37,8 @@ import kotlinx.coroutines.withContext
 class AddDialog : DialogFragment() {
 
     lateinit var fileUri: Uri
+
+    private val imagePathList: ArrayList<Uri> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,8 +67,6 @@ class AddDialog : DialogFragment() {
             radioButton_image_first.isChecked = !isChecked
         }
 
-//        editText_add_licence_number.addTextChangedListener(PatternedTextWatcher("##-#####"))
-
         button_add.setOnClickListener {
             editText_add_first_name.error = null
             editText_add_last_name.error = null
@@ -84,7 +84,9 @@ class AddDialog : DialogFragment() {
                 return@setOnClickListener
             }
 
-            if (editText_add_licence_number.getText(true).trim().isEmpty() || editText_add_licence_number.getText(true).trim().count() != 7) {
+            if (editText_add_licence_number.getText(true).trim()
+                    .isEmpty() || editText_add_licence_number.getText(true).trim().count() != 7
+            ) {
                 editText_add_licence_number.error = "Vyplňte EĆV!"
                 editText_add_licence_number.requestFocus()
                 return@setOnClickListener
@@ -97,20 +99,7 @@ class AddDialog : DialogFragment() {
 
                 alertDialog.setPositiveButton("Áno") { dialog, _ ->
                     dialog.dismiss()
-
-                    GlobalScope.launch(Dispatchers.IO) {
-                        (context as MainActivity).database.recordDao().insert(
-                            RecordEntity(
-                                firstName = editText_add_first_name.text.toString().capitalize(),
-                                lastName = editText_add_last_name.text.toString().capitalize(),
-                                licenceNumber = editText_add_licence_number.getText(false).toString().toUpperCase()
-                            )
-                        )
-
-                        withContext(Dispatchers.Main) {
-                            (context as MainActivity).notifyDataSetChanged()
-                        }
-                    }
+                    addRecord()
                 }
 
                 alertDialog.setNegativeButton("Nie") { dialog, _ ->
@@ -119,6 +108,8 @@ class AddDialog : DialogFragment() {
                 }
 
                 alertDialog.show()
+            } else {
+                addRecord()
             }
         }
     }
@@ -130,6 +121,40 @@ class AddDialog : DialogFragment() {
         params.width = LinearLayout.LayoutParams.MATCH_PARENT
         params.height = LinearLayout.LayoutParams.WRAP_CONTENT
         dialog!!.window!!.attributes = params as android.view.WindowManager.LayoutParams
+    }
+
+    private fun addRecord() = GlobalScope.launch(Dispatchers.IO) {
+        val newRecord = RecordEntity(
+            firstName = editText_add_first_name.text.toString().capitalize(),
+            lastName = editText_add_last_name.text.toString().capitalize(),
+            licenceNumber = editText_add_licence_number.getText(false).toString().toUpperCase()
+        )
+
+        if (imagePathList.size != 0) {
+            for ((counter, uri: Uri) in imagePathList.withIndex()) {
+                val iStream: InputStream = activity?.contentResolver?.openInputStream(uri)!!
+                val imageAsByteArray: ByteArray = iStream.readBytes()
+
+                if (counter == 0) {
+                    newRecord.imageFirst = imageAsByteArray
+                }
+
+                if (counter == 1) {
+                    newRecord.imageSecond = imageAsByteArray
+                }
+            }
+        }
+
+        (context as MainActivity).database.recordDao().insert(newRecord)
+
+        withContext(Dispatchers.Main) {
+            Toast.makeText(
+                this@AddDialog.requireContext(),
+                "Záznam bol úspešne pridaný!",
+                Toast.LENGTH_SHORT
+            ).show()
+            (context as MainActivity).notifyDataSetChanged()
+        }
     }
 
     private fun askCameraPermission() {
@@ -153,14 +178,13 @@ class AddDialog : DialogFragment() {
                 override fun onPermissionRationaleShouldBeShown(
                     permissions: List<PermissionRequest>,
                     token: PermissionToken
-                ) {/* ... */
-                    //show alert dialog with permission options
+                ) {
                     AlertDialog.Builder(this@AddDialog.requireContext())
                         .setTitle(
                             "Chyba!"
                         )
                         .setMessage(
-                            "Prosím povoľte vytváranie fotografí aplikáciou!"
+                            "Prosím povoľte vytváranie fotografií aplikáciou!"
                         )
                         .setNegativeButton(
                             android.R.string.cancel
@@ -205,6 +229,28 @@ class AddDialog : DialogFragment() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
+    private fun displayImage(uri: Uri) {
+        if (radioButton_image_first.isChecked) {
+            imageView_add_first.setImageURI(uri)
+            radioButton_image_second.isChecked = true
+
+            if (imagePathList.size > 0) {
+                imagePathList[0] = uri
+            } else {
+                imagePathList.add(uri)
+            }
+        } else {
+            imageView_add_second.setImageURI(uri)
+            radioButton_image_first.isChecked = true
+
+            if (imagePathList.size > 1) {
+                imagePathList[1] = uri
+            } else {
+                imagePathList.add(uri)
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -232,30 +278,35 @@ class AddDialog : DialogFragment() {
         if (resultCode == Activity.RESULT_OK
             && requestCode == TAKE_PHOTO_REQUEST
         ) {
-            if (radioButton_image_first.isChecked) {
-                imageView_add_first.setImageURI(fileUri)
-            } else {
-                imageView_add_second.setImageURI(fileUri)
-            }
+            displayImage(fileUri)
         } else if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data!!.data != null) {
-                if (radioButton_image_first.isChecked) {
-                    imageView_add_first.setImageURI(data.data)
-                } else {
-                    imageView_add_second.setImageURI(data.data)
-                }
+                displayImage(data.data!!)
             } else {
                 if (data.clipData != null) {
                     val mClipData = data.clipData
-                    for (i in 0 until mClipData!!.itemCount) {
+
+                    imagePathList.clear()
+
+                    if (mClipData!!.itemCount > 2) {
+                        Toast.makeText(
+                            this.requireContext(),
+                            "Vybrali ste viac než 2 fotografie. Do záznamu sa dajú pridať maximálne 2 obrázky!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                    for (i in 0 until mClipData.itemCount) {
                         val item = mClipData.getItemAt(i)
 
                         if (i == 0) {
                             imageView_add_first?.setImageURI(item.uri)
+                            imagePathList.add(item.uri)
                         }
 
                         if (i == 1) {
                             imageView_add_second?.setImageURI(item.uri)
+                            imagePathList.add(item.uri)
                         }
                     }
                 }

@@ -14,6 +14,6 @@ data class RecordEntity(
     val firstName: String = "",
     val lastName: String = "",
     val licenceNumber: String = "",
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val imageFirst: ByteArray? = null,
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB) val imageSecond: ByteArray? = null
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB) var imageFirst: ByteArray? = null,
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB) var imageSecond: ByteArray? = null
 )
