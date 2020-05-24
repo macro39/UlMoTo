@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.ulmoto.add.AddDialog
 import com.example.ulmoto.persister.AppDatabase
-import com.example.ulmoto.persister.RecordEntity
 import com.example.ulmoto.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
@@ -34,23 +33,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         database = AppDatabase.create(this)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            database.recordDao().insert(
-                RecordEntity(
-                    firstName = "Adolf",
-                    lastName = "Hitler",
-                    licencePlate = "LV-145EG"
-                )
-            )
-            database.recordDao().insert(
-                RecordEntity(
-                    firstName = "Janko",
-                    lastName = "Tribula",
-                    licencePlate = "BA-420KU"
-                )
-            )
-        }
 
         floatingActionButton_add_record.setOnClickListener {
             val ft: FragmentTransaction? =
