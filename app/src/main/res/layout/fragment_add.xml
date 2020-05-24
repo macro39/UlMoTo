@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10sp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10sp">
 
         <TextView
+            style="@style/TextView.Title.H1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:gravity="center_horizontal"
-            android:text="@string/lable_add_record"
-            android:textAlignment="center"
-            android:textSize="40sp" />
+            android:text="@string/label_add_record_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,29 +26,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15sp"
-                android:layout_marginRight="15sp"
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/TextView.Title.H3"
                     android:layout_width="wrap_content"
                     android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_first_name"
-                    android:textAlignment="center" />
+                    android:text="@string/label_first_name" />
 
                 <TextView
+                    style="@style/TextView.Title.H3"
                     android:layout_width="wrap_content"
                     android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_last_name"
-                    android:textAlignment="center" />
+                    android:text="@string/label_last_name" />
 
                 <TextView
+                    style="@style/TextView.Title.H3"
                     android:layout_width="wrap_content"
                     android:layout_height="50sp"
-                    android:gravity="center"
-                    android:text="@string/label_licence_plate"
-                    android:textAlignment="center" />
+                    android:text="@string/label_licence_plate" />
             </LinearLayout>
 
             <LinearLayout
@@ -63,29 +56,24 @@
                     android:id="@+id/editText_add_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
-                    android:inputType="text"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:inputType="text" />
 
                 <EditText
                     android:id="@+id/editText_add_last_name"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
-                    android:inputType="text"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:inputType="text" />
 
-<!--                <EditText-->
-<!--                    android:id="@+id/editText_add_licence_number"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="50sp"-->
-<!--                    android:gravity="center" />-->
                 <ru.kolotnev.formattedittext.MaskedEditText
                     android:id="@+id/editText_add_licence_plate"
                     android:layout_width="match_parent"
                     android:layout_height="50sp"
-                    android:text=""
                     android:gravity="center"
+                    android:text=""
                     app:mask="AA-*****"
-                    app:placeholder="_"/>
+                    app:placeholder="_" />
             </LinearLayout>
         </LinearLayout>
 
@@ -98,7 +86,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -138,16 +125,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
                 <RadioButton
                     android:id="@+id/radioButton_image_first"
+                    style="@style/TextView.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Obrázok 1"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="@string/label_licence_plate_front_side" />
             </LinearLayout>
 
             <LinearLayout
@@ -158,26 +145,12 @@
 
                 <RadioButton
                     android:id="@+id/radioButton_image_second"
+                    style="@style/TextView.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Obrázok 2"/>
+                    android:text="@string/label_licence_plate_back_side" />
             </LinearLayout>
         </LinearLayout>
-
-
-        <!--        <ImageView-->
-        <!--            android:id="@+id/imageView_add_first"-->
-        <!--            android:layout_width="50sp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:adjustViewBounds="true"-->
-        <!--            android:scaleType="centerCrop" />-->
-
-        <!--        <ImageView-->
-        <!--            android:id="@+id/imageView_add_second"-->
-        <!--            android:layout_width="50sp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:adjustViewBounds="true"-->
-        <!--            android:scaleType="centerCrop" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -188,7 +161,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20sp"
-                android:layout_marginRight="20sp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -221,6 +193,6 @@
             android:layout_width="match_parent"
             android:layout_height="50sp"
             android:gravity="center"
-            android:text="@string/label_button_add_record" />
+            android:text="@string/label_add_record" />
     </LinearLayout>
 </ScrollView>

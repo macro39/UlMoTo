@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "record")
 data class RecordEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val recordId: Long = 0,
     val firstName: String = "",
     val lastName: String = "",
     val licencePlate: String = "",

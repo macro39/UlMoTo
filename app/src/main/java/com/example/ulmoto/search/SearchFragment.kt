@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
 import com.example.ulmoto.persister.RecordEntity
@@ -57,10 +58,6 @@ class SearchFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
-//        view.findViewById<Button>(R.id.button_first).setOnClickListener {
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +127,7 @@ class SearchFragment : Fragment() {
 
         adapter = RecordAdapter(
             this@SearchFragment.requireActivity(),
+            this.findNavController(),
             this@SearchFragment.records as ArrayList<RecordEntity>
         )
 

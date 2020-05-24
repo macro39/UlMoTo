@@ -17,6 +17,9 @@ interface RecordDao {
     @Query("SELECT * FROM record")
     suspend fun getAll(): List<RecordEntity>
 
+    @Query("SELECT * FROM record WHERE recordId = :id")
+    suspend fun getById(id: Long): RecordEntity
+
     @Query("SELECT * FROM record WHERE firstName LIKE '%' || :firstName || '%'")
     suspend fun getAllByFirstName(firstName: String): List<RecordEntity>
 
