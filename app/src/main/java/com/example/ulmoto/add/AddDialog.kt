@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,9 @@ class AddDialog : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        editText_add_licence_plate.filters =
+            editText_add_licence_plate.filters + InputFilter.AllCaps()
 
         button_add_choose_image.setOnClickListener {
             pickImageFromGallery()
@@ -95,7 +99,7 @@ class AddDialog : DialogFragment() {
             if (imageView_add_first.drawable == null && imageView_add_second.drawable == null) {
                 val alertDialog = AlertDialog.Builder(this.requireContext())
                 alertDialog.setTitle("Upozornenie")
-                alertDialog.setMessage("Prajete si vytvoriť nový záznam bez fotografie?")
+                alertDialog.setMessage("Prajete si vytvoriť nový záznam bez fotografie TP?")
 
                 alertDialog.setPositiveButton("Áno") { dialog, _ ->
                     dialog.dismiss()

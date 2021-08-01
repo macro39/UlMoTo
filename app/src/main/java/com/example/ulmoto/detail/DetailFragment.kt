@@ -47,8 +47,6 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).enableBackButton(true)
-
         button_detail_add_repair.setOnClickListener {
             val ft: FragmentTransaction? =
                 childFragmentManager.beginTransaction()
@@ -73,7 +71,10 @@ class DetailFragment : Fragment() {
         selectedRecordId = arguments?.getLong(RECORD_ID)!!
 
         GlobalScope.launch(Dispatchers.IO) {
-            reloadSelectedRecord()
+            selectedRecord =
+                (context as MainActivity).database.recordWithRepairsDao().getRecordWithRepairs(
+                    selectedRecordId
+                )
 
             updatePriceCount()
 
@@ -121,13 +122,6 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun reloadSelectedRecord() = GlobalScope.launch(Dispatchers.IO) {
-        selectedRecord =
-            (context as MainActivity).database.recordWithRepairsDao().getRecordWithRepairs(
-                selectedRecordId
-            )
-    }
-
     private fun updateListViewAdapter() = GlobalScope.launch(Dispatchers.Main) {
         listView_detail_repairs.adapter = null
 
@@ -156,7 +150,10 @@ class DetailFragment : Fragment() {
         GlobalScope.launch(Dispatchers.IO) {
             (activity as MainActivity).database.repairDao().insert(repairEntity)
 
-            reloadSelectedRecord()
+            selectedRecord =
+                (context as MainActivity).database.recordWithRepairsDao().getRecordWithRepairs(
+                    selectedRecordId
+                )
             updateListViewAdapter()
             updatePriceCount()
         }

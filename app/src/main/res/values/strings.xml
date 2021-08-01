@@ -21,7 +21,7 @@
     <string name="label_total_price">Celková suma opráv</string>
     <string name="label_repair_list">Zoznam opráv</string>
     <string name="label_add_repair">Pridaj opravu</string>
-    <string name="label_licence_plate_front_side">EČV predná strana</string>
-    <string name="label_licence_plate_back_side">EČV zadná strana</string>
+    <string name="label_registration_book_front">TP predná strana</string>
+    <string name="label_registration_book_back">TP zadná strana</string>
     <string name="label_repair_date">Dátum opravy</string>
 </resources>

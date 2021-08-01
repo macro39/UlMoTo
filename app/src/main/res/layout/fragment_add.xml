@@ -134,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/label_licence_plate_front_side" />
+                    android:text="@string/label_registration_book_front" />
             </LinearLayout>
 
             <LinearLayout
@@ -148,7 +148,7 @@
                     style="@style/TextView.Bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_licence_plate_back_side" />
+                    android:text="@string/label_registration_book_back" />
             </LinearLayout>
         </LinearLayout>
 

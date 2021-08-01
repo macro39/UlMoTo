@@ -1,83 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10sp">
+        android:padding="16dp">
 
         <TextView
+            android:id="@+id/textView4"
             style="@style/TextView.Title.H1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_add_repair_record_title" />
+            android:text="@string/label_add_repair_record_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.256"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/textView5"
+            style="@style/TextView.Title.H3"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:text="@string/label_repair_description"
+            app:layout_constraintEnd_toStartOf="@+id/editText_add_repair_description"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="15sp"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/textView"
+            style="@style/TextView.Title.H3"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:text="@string/label_repair_price"
+            app:layout_constraintEnd_toStartOf="@+id/editText_add_repair_price"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-                <TextView
-                    style="@style/TextView.Title.H3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:text="@string/label_repair_description" />
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/TextView.Title.H3"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:text="@string/label_repair_date"
+            app:layout_constraintEnd_toStartOf="@+id/textView_add_repair_date"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
-                <TextView
-                    style="@style/TextView.Title.H3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:text="@string/label_repair_price" />
+        <EditText
+            android:id="@+id/editText_add_repair_description"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:gravity="center"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-                <TextView
-                    style="@style/TextView.Title.H3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50sp"
-                    android:text="@string/label_repair_date" />
-            </LinearLayout>
+        <EditText
+            android:id="@+id/editText_add_repair_price"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:gravity="center"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/editText_add_repair_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:gravity="center"
-                    android:inputType="text" />
-
-                <EditText
-                    android:id="@+id/editText_add_repair_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:gravity="center"
-                    android:inputType="number" />
-
-                <TextView
-                    android:id="@+id/textView_add_repair_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="50sp"
-                    android:gravity="center" />
-            </LinearLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/textView_add_repair_date"
+            android:layout_width="0dp"
+            android:layout_height="50sp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <Button
             android:id="@+id/button_add_repair"
             android:layout_width="match_parent"
             android:layout_height="50sp"
             android:gravity="center"
-            android:text="@string/label_add_repair_record" />
-    </LinearLayout>
+            android:text="@string/label_add_repair_record"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
