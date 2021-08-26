@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_search">
 
         <action
-            android:id="@+id/toDetail"
+            android:id="@+id/action_SearchFragment_to_DetailFragment"
             app:destination="@id/DetailFragment" />
     </fragment>
 
@@ -22,8 +22,11 @@
         android:label="@string/label_detail"
         tools:layout="@layout/fragment_detail">
 
+        <argument
+            android:name="recordId"
+            app:argType="long" />
         <action
-            android:id="@+id/backToSearch"
+            android:id="@+id/action_DetailFragment_to_SearchFragment"
             app:destination="@id/SearchFragment" />
     </fragment>
 </navigation>

@@ -1,66 +1,82 @@
 package com.example.ulmoto.add
 
-import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentValues
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.InputFilter
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.example.ulmoto.MainActivity
-import com.example.ulmoto.R
+import com.anilokcun.uwmediapicker.UwMediaPicker
+import com.example.ulmoto.*
 import com.example.ulmoto.persister.RecordEntity
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.opensooq.pluto.listeners.OnItemClickListener
+import kotlinx.android.synthetic.main.carousel_item.view.*
 import kotlinx.android.synthetic.main.fragment_add.*
+import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.InputStream
 
 
 /**
  * Created by Kamil Macek on 18.5.2020.
  */
-class AddDialog : DialogFragment() {
-
-    lateinit var fileUri: Uri
+class AddDialog : DialogFragment(R.layout.fragment_add) {
 
     private val imagePathList: ArrayList<Uri> = arrayListOf()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add, container, false)
-    }
+    private val images: ArrayList<String> = arrayListOf()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        updateImagesPreview()
 
         editText_add_licence_plate.filters =
             editText_add_licence_plate.filters + InputFilter.AllCaps()
 
         button_add_choose_image.setOnClickListener {
-            pickImageFromGallery()
+            com.github.dhaval2404.imagepicker.ImagePicker.with(requireActivity())
+                .galleryOnly()
+//                .crop()
+                .start { resultCode, data ->
+                    when (resultCode) {
+                        Activity.RESULT_OK -> {
+                            displayImage(data?.data!!)
+                        }
+                        com.github.dhaval2404.imagepicker.ImagePicker.RESULT_ERROR -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Chyba pri výbere obrázkov!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
         }
 
         button_add_take_photo.setOnClickListener {
-            askCameraPermission()
+            com.github.dhaval2404.imagepicker.ImagePicker.with(requireActivity())
+                .cameraOnly()
+//                .crop()
+                .start { resultCode, data ->
+                    when (resultCode) {
+                        Activity.RESULT_OK -> {
+                            displayImage(data?.data!!)
+                        }
+                        com.github.dhaval2404.imagepicker.ImagePicker.RESULT_ERROR -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Chyba pri výbere obrázkov!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
         }
 
         radioButton_image_first.setOnCheckedChangeListener { _, isChecked ->
@@ -69,6 +85,28 @@ class AddDialog : DialogFragment() {
 
         radioButton_image_second.setOnCheckedChangeListener { _, isChecked ->
             radioButton_image_first.isChecked = !isChecked
+        }
+
+        btnPickImages.setOnClickListener {
+            images.clear()
+            updateImagesPreview()
+
+            UwMediaPicker
+                .with(this)                        // Activity or Fragment
+                .setGalleryMode(UwMediaPicker.GalleryMode.ImageGallery) // GalleryMode: ImageGallery/VideoGallery/ImageAndVideoGallery, default is ImageGallery
+                .setGridColumnCount(4)                                  // Grid column count, default is 3
+//                .setMaxSelectableMediaCount(10)                         // Maximum selectable media count, default is null which means infinite
+                .setLightStatusBar(true)                                // Is llight status bar enable, default is true
+//                .enableImageCompression(true)				// Is image compression enable, default is false
+//                .setCompressionMaxWidth(1280F)				// Compressed image's max width px, default is 1280
+//                .setCompressionMaxHeight(720F)				// Compressed image's max height px, default is 720
+//                .setCompressFormat(Bitmap.CompressFormat.JPEG)		// Compressed image's format, default is JPEG
+//                .setCompressionQuality(85)				// Image compression quality, default is 85
+//                .setCompressedFileDestinationPath(destinationPath)	// Compressed image file's destination path, default is "${application.getExternalFilesDir(null).path}/Pictures"
+                .launch { selectedMediaList ->
+                    images.addAll(selectedMediaList?.map { it.mediaPath }!!)
+                    updateImagesPreview()
+                }
         }
 
         button_add.setOnClickListener {
@@ -93,6 +131,14 @@ class AddDialog : DialogFragment() {
             ) {
                 editText_add_licence_plate.error = "Vyplňte EĆV!"
                 editText_add_licence_plate.requestFocus()
+                return@setOnClickListener
+            }
+
+            if (etTelephone.getText(true).trim().isEmpty()
+                || etTelephone.getText(true).trim().count() != 9
+            ) {
+                etTelephone.error = "Vyplňte telefón!"
+                etTelephone.requestFocus()
                 return@setOnClickListener
             }
 
@@ -161,25 +207,25 @@ class AddDialog : DialogFragment() {
         val newRecord = RecordEntity(
             firstName = editText_add_first_name.text.toString().capitalize(),
             lastName = editText_add_last_name.text.toString().capitalize(),
-            licencePlate = editText_add_licence_plate.getText(false).toString().toUpperCase()
+            licencePlate = editText_add_licence_plate.getText(false).toString().uppercase(),
+            telephone = etTelephone.getText(false).toString(),
+            images = images
         )
 
         if (imagePathList.size != 0) {
             for ((counter, uri: Uri) in imagePathList.withIndex()) {
-                val iStream: InputStream = activity?.contentResolver?.openInputStream(uri)!!
-                val imageAsByteArray: ByteArray = iStream.readBytes()
-
-                if (counter == 0) {
-                    newRecord.imageFirst = imageAsByteArray
-                }
-
-                if (counter == 1) {
-                    newRecord.imageSecond = imageAsByteArray
+                when (counter) {
+                    0 -> {
+                        newRecord.imageFirst = uri.path
+                    }
+                    1 -> {
+                        newRecord.imageSecond = uri.path
+                    }
                 }
             }
         }
 
-        (context as MainActivity).database.recordDao().insert(newRecord)
+        (context as MainActivity).database.recordDao().upsert(newRecord)
 
         withContext(Dispatchers.Main) {
             Toast.makeText(
@@ -187,80 +233,11 @@ class AddDialog : DialogFragment() {
                 "Záznam bol úspešne pridaný!",
                 Toast.LENGTH_SHORT
             ).show()
+
             (context as MainActivity).notifyDataSetChanged()
+
+            this@AddDialog.dismiss()
         }
-    }
-
-    private fun askCameraPermission() {
-        Dexter.withActivity(this.requireActivity())
-            .withPermissions(
-                Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ).withListener(object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                    if (report.areAllPermissionsGranted()) {
-                        launchCamera()
-                    } else {
-                        Toast.makeText(
-                            this@AddDialog.requireContext(),
-                            "Prosím povoľte vytváranie fotografí aplikáciou!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: List<PermissionRequest>,
-                    token: PermissionToken
-                ) {
-                    AlertDialog.Builder(this@AddDialog.requireContext())
-                        .setTitle(
-                            "Chyba!"
-                        )
-                        .setMessage(
-                            "Prosím povoľte vytváranie fotografií aplikáciou!"
-                        )
-                        .setNegativeButton(
-                            android.R.string.cancel
-                        ) { dialog, _ ->
-                            dialog.dismiss()
-                            token.cancelPermissionRequest()
-                        }
-                        .setPositiveButton(
-                            android.R.string.ok
-                        ) { dialog, _ ->
-                            dialog.dismiss()
-                            token.continuePermissionRequest()
-                        }
-                        .show()
-                }
-            }).check()
-    }
-
-    private fun launchCamera() {
-        val values = ContentValues(1)
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg")
-        fileUri = activity?.contentResolver?.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            values
-        )!!
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (intent.resolveActivity(activity?.packageManager!!) != null) {
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri)
-            intent.addFlags(
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-                        or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            startActivityForResult(intent, TAKE_PHOTO_REQUEST)
-        }
-    }
-
-    private fun pickImageFromGallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
     private fun displayImage(uri: Uri) {
@@ -285,72 +262,14 @@ class AddDialog : DialogFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED
-                ) {
-                    pickImageFromGallery()
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Prosím povoľte prístup k súborom v zariadení!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+    fun updateImagesPreview() {
+        val adapter = ImagePreviewAdapter(images)
+        isImages.create(adapter, lifecycle = lifecycle)
+
+        adapter.setOnItemClickListener(object : OnItemClickListener<String> {
+            override fun onItemClicked(item: String?, position: Int) {
+                showImagePreview(requireContext(), images as ArrayList<String?>)
             }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK
-            && requestCode == TAKE_PHOTO_REQUEST
-        ) {
-            displayImage(fileUri)
-        } else if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            if (data!!.data != null) {
-                displayImage(data.data!!)
-            } else {
-                if (data.clipData != null) {
-                    val mClipData = data.clipData
-
-                    imagePathList.clear()
-
-                    if (mClipData!!.itemCount > 2) {
-                        Toast.makeText(
-                            this.requireContext(),
-                            "Vybrali ste viac než 2 fotografie. Do záznamu sa dajú pridať maximálne 2 obrázky!",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-
-                    for (i in 0 until mClipData.itemCount) {
-                        val item = mClipData.getItemAt(i)
-
-                        if (i == 0) {
-                            imageView_add_first?.setImageURI(item.uri)
-                            imagePathList.add(item.uri)
-                        }
-
-                        if (i == 1) {
-                            imageView_add_second?.setImageURI(item.uri)
-                            imagePathList.add(item.uri)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    companion object {
-        private const val IMAGE_PICK_CODE = 1000
-        private const val TAKE_PHOTO_REQUEST = 1002
-        private const val PERMISSION_CODE = 1001
+        })
     }
 }

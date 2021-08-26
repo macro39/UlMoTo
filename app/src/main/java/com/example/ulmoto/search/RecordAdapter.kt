@@ -1,75 +1,48 @@
 package com.example.ulmoto.search
 
-import android.app.Activity
-import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.TextView
-import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.ulmoto.R
-import com.example.ulmoto.detail.DetailFragment
 import com.example.ulmoto.persister.RecordEntity
+import kotlinx.android.synthetic.main.item_search_record.view.*
 
 
 /**
  * Created by Kamil Macek on 18.5.2020.
  */
-class RecordAdapter(private var activity: Activity, private var navController: NavController, private var records: ArrayList<RecordEntity>) :
-    BaseAdapter() {
+class RecordAdapter(private var records: ArrayList<RecordEntity>) :
+    RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
 
-    private class ViewHolder(row: View?) {
-        var mTextViewFullName: TextView? = null
-        var mTextViewLicencePlate: TextView? = null
-        var mButtonDetail: Button? = null
+    inner class RecordViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-        init {
-            this.mTextViewFullName = row?.findViewById(R.id.textView_detail_list_description)
-            this.mTextViewLicencePlate = row?.findViewById(R.id.textView_detail_list_price)
-            this.mButtonDetail = row?.findViewById(R.id.button_search_list_detail)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
+        return RecordViewHolder(
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_search_record, parent, false)
+        )
+    }
+
+    override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
+        val item = records[position]
+
+        holder.itemView.apply {
+            tvDescription.text = item.firstName + " " + item.lastName
+            tvPrice.text = item.licencePlate
+
+            tvDetail.setOnClickListener {
+                findNavController().navigate(
+                    SearchFragmentDirections.actionSearchFragmentToDetailFragment(
+                        item.recordId
+                    )
+                )
+            }
         }
     }
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view: View
-        val viewHolder: ViewHolder
-        if (convertView == null) {
-            val inflater =
-                activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            view = inflater.inflate(R.layout.listview_search_item, null)
-            viewHolder = ViewHolder(view)
-            view.tag = viewHolder
-        } else {
-            view = convertView
-            viewHolder = view.tag as ViewHolder
-        }
-
-        val record = records[position]
-
-        viewHolder.mTextViewFullName?.text = record.firstName + " " + record.lastName
-        viewHolder.mTextViewLicencePlate?.text = record.licencePlate
-
-        viewHolder.mButtonDetail?.setOnClickListener {
-            val args = Bundle()
-            args.putLong(DetailFragment.RECORD_ID, record.recordId)
-            navController.navigate(R.id.DetailFragment, args)
-        }
-
-        return view
-    }
-
-    override fun getItem(position: Int): Any {
-        return records[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
         return records.size
     }
 }

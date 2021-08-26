@@ -5,7 +5,7 @@
     <string name="label_licence_plate">EČV</string>
     <string name="label_add_record_title">Pridanie záznamu</string>
     <string name="label_number_of_records">"Počet výsledkov: "</string>
-    <string name="label_no_records">Źiadne výsledky</string>
+    <string name="label_no_records">Žiadne výsledky</string>
     <string name="label_search_record_title">Vyhľadanie záznamu</string>
     <string name="label_add_record">Pridaj záznam</string>
     <string name="label_choose_image">Vyber obrázok</string>

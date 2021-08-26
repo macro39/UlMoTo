@@ -1,9 +1,6 @@
 package com.example.ulmoto.persister
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 
 /**
@@ -12,7 +9,10 @@ import androidx.room.Query
 @Dao
 interface RepairDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(repairEntity: RepairEntity): Long
+    suspend fun upsert(repairEntity: RepairEntity): Long
+
+    @Delete
+    suspend fun delete(repairEntity: RepairEntity)
 
     @Query("SELECT SUM(price) AS value FROM repair WHERE recordEntityId = :recordId")
     suspend fun getPriceCount(recordId: Long): Double

@@ -2,12 +2,18 @@ package com.example.ulmoto.detail
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import com.anilokcun.uwmediapicker.UwMediaPicker
+import com.example.ulmoto.ImagePreviewAdapter
+import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
+import com.example.ulmoto.persister.RepairEntity
+import com.example.ulmoto.showImagePreview
+import com.opensooq.pluto.listeners.OnItemClickListener
+import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add_repair.*
+import kotlinx.android.synthetic.main.fragment_add_repair.btnPickImages
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -15,15 +21,9 @@ import java.util.*
 /**
  * Created by Kamil Macek on 22.5.2020.
  */
-class AddRepairDialog : DialogFragment() {
+class AddRepairDialog : DialogFragment(R.layout.fragment_add_repair) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_add_repair, container, false)
-    }
+    private val images: ArrayList<String> = arrayListOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,8 +42,9 @@ class AddRepairDialog : DialogFragment() {
             val day: Int = c.get(Calendar.DAY_OF_MONTH)
             val year: Int = c.get(Calendar.YEAR)
 
-            val datePickerDialog = DatePickerDialog(this.requireActivity(),
-                DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            val datePickerDialog = DatePickerDialog(
+                this.requireActivity(),
+                { _, year, month, dayOfMonth ->
                     textView_add_repair_date.text =
                         "" + String.format("%02d", dayOfMonth) + "/" + String.format(
                             "%02d",
@@ -67,13 +68,42 @@ class AddRepairDialog : DialogFragment() {
                 return@setOnClickListener
             }
 
-            (parentFragment as DetailFragment).addRepair(
-                editText_add_repair_description.text.toString(),
-                SimpleDateFormat("dd/MM/yyyy").parse(textView_add_repair_date.text.toString()),
-                editText_add_repair_price.text.toString().toDouble()
+            val repair = RepairEntity(
+                description = editText_add_repair_description.text.toString(),
+                dateOfRepair = SimpleDateFormat("dd/MM/yyyy").parse(textView_add_repair_date.text.toString()),
+                price = editText_add_repair_price.text.toString().toDouble(),
+                images = images
             )
+
+            (context as MainActivity).notifyDataSetChanged(repair)
 
             this.dismiss()
         }
+
+        btnPickImages.setOnClickListener {
+            images.clear()
+            updateImagesPreview()
+
+            UwMediaPicker
+                .with(this)
+                .setGalleryMode(UwMediaPicker.GalleryMode.ImageGallery)
+                .setGridColumnCount(4)
+                .setLightStatusBar(true)
+                .launch { selectedMediaList ->
+                    images.addAll(selectedMediaList?.map { it.mediaPath }!!)
+                    updateImagesPreview()
+                }
+        }
+    }
+
+    fun updateImagesPreview() {
+        val adapter = ImagePreviewAdapter(images)
+        pvImages.create(adapter, lifecycle = lifecycle)
+
+        adapter.setOnItemClickListener(object : OnItemClickListener<String> {
+            override fun onItemClicked(item: String?, position: Int) {
+                showImagePreview(requireContext(), images as ArrayList<String?>)
+            }
+        })
     }
 }

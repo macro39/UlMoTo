@@ -2,18 +2,23 @@ package com.example.ulmoto
 
 
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.VmPolicy
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.ulmoto.add.AddDialog
+import com.example.ulmoto.detail.AddRepairDialog
+import com.example.ulmoto.detail.DetailFragment
 import com.example.ulmoto.persister.AppDatabase
+import com.example.ulmoto.persister.RepairEntity
 import com.example.ulmoto.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 
 /**
@@ -31,6 +36,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val builder = VmPolicy.Builder()
+        StrictMode.setVmPolicy(builder.build())
+
+        Timber.plant(Timber.DebugTree())
+
         database = AppDatabase.create(this)
 
         val navHostFragment =
@@ -41,25 +51,16 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration)
 
         floatingActionButton_add_record.setOnClickListener {
-            val ft: FragmentTransaction? =
-                supportFragmentManager.beginTransaction()
-            val prev: Fragment? =
-                supportFragmentManager.findFragmentByTag("AddDialog")
-            if (prev != null) {
-                ft?.remove(prev)
+            currentFragment = navHostFragment.childFragmentManager.fragments[0]
+
+            when (currentFragment) {
+                is SearchFragment -> {
+                    AddDialog().show(supportFragmentManager, "AddDialog")
+                }
+                is DetailFragment -> {
+                    AddRepairDialog().show(supportFragmentManager, "AddRepairDialog")
+                }
             }
-            ft?.addToBackStack(null)
-            dialogFragment = AddDialog()
-            dialogFragment?.show(ft!!, "AddDialog")
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (dialogFragment == null) {
-            currentFragment =
-                supportFragmentManager.fragments.last()?.childFragmentManager?.fragments?.get(0)!!
         }
     }
 
@@ -72,13 +73,19 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun notifyDataSetChanged() {
+    fun notifyDataSetChanged(repair: RepairEntity? = null) {
         val navHostFragment = supportFragmentManager.primaryNavigationFragment
         currentFragment = navHostFragment!!.childFragmentManager.fragments[0]
 
-        if (currentFragment is SearchFragment) {
-            (currentFragment as SearchFragment).reloadAllRecordsFromDatabase()
+        when (currentFragment) {
+            is SearchFragment -> {
+                (currentFragment as SearchFragment).reloadAllRecordsFromDatabase()
+            }
+            is DetailFragment -> {
+                (currentFragment as DetailFragment).addRepair(repair!!)
+            }
         }
+
         dialogFragment?.dismiss()
         dialogFragment = null
     }

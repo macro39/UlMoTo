@@ -8,16 +8,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/textView4"
             style="@style/TextView.Title.H1"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/label_add_repair_record_title"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.256"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,66 +24,97 @@
             android:id="@+id/textView5"
             style="@style/TextView.Title.H3"
             android:layout_width="0dp"
-            android:layout_height="50sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/label_repair_description"
-            app:layout_constraintEnd_toStartOf="@+id/editText_add_repair_description"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <TextView
             android:id="@+id/textView"
             style="@style/TextView.Title.H3"
             android:layout_width="0dp"
-            android:layout_height="50sp"
+            android:layout_height="0dp"
+            android:gravity="center"
             android:text="@string/label_repair_price"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/editText_add_repair_price"
             app:layout_constraintEnd_toStartOf="@+id/editText_add_repair_price"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toTopOf="@+id/editText_add_repair_price" />
 
         <TextView
             android:id="@+id/textView3"
             style="@style/TextView.Title.H3"
             android:layout_width="0dp"
-            android:layout_height="50sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/label_repair_date"
             app:layout_constraintEnd_toStartOf="@+id/textView_add_repair_date"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <EditText
+            android:id="@+id/editText_add_repair_description"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:fadeScrollbars="false"
+            android:gravity="start"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:scrollbars="vertical"
+            android:textAlignment="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <EditText
-            android:id="@+id/editText_add_repair_description"
-            android:layout_width="0dp"
-            android:layout_height="50sp"
-            android:gravity="center"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/textView5"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-        <EditText
             android:id="@+id/editText_add_repair_price"
             android:layout_width="0dp"
-            android:layout_height="50sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/textView_add_repair_date" />
 
         <TextView
             android:id="@+id/textView_add_repair_date"
             android:layout_width="0dp"
-            android:layout_height="50sp"
+            android:layout_height="wrap_content"
             android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toTopOf="@+id/textView3"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.opensooq.pluto.PlutoView
+            android:id="@+id/pvImages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicator_visibility="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_add_repair_description" />
+
+        <Button
+            android:id="@+id/btnPickImages"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vybrať forografie"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pvImages" />
 
         <Button
             android:id="@+id/button_add_repair"
@@ -93,8 +123,8 @@
             android:gravity="center"
             android:text="@string/label_add_repair_record"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.812"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/btnPickImages" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

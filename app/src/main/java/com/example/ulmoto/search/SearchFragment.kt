@@ -4,36 +4,33 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
 import com.example.ulmoto.persister.RecordEntity
 import com.google.android.material.chip.Chip
+import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.StringBuilder
+
 
 /**
  * Created by Kamil Macek on 17.5.2020.
  */
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private var records: List<RecordEntity> = arrayListOf()
     private lateinit var adapter: RecordAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_search, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
 
         reloadAllRecordsFromDatabase()
 
@@ -54,15 +51,10 @@ class SearchFragment : Fragment() {
 
             Toast.makeText(
                 this.requireContext(),
-                 message,
+                message,
                 Toast.LENGTH_SHORT
             ).show()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -73,7 +65,11 @@ class SearchFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_reload -> {
-                Toast.makeText(this.requireContext(), "Boli načítané všetky záznamy", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this.requireContext(),
+                    "Boli načítané všetky záznamy",
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 reloadAllRecordsFromDatabase()
                 editText_search_filter.setText("", TextView.BufferType.EDITABLE)
@@ -123,13 +119,8 @@ class SearchFragment : Fragment() {
     private fun updateListViewAdapter() {
         progressBar_search.visibility = View.VISIBLE
 
-        listView_search.adapter = null
-
-        adapter = RecordAdapter(
-            this@SearchFragment.requireActivity(),
-            this.findNavController(),
-            this@SearchFragment.records as ArrayList<RecordEntity>
-        )
+        rvSearch.adapter = null
+        adapter = RecordAdapter(this@SearchFragment.records as ArrayList<RecordEntity>)
 
         if (records.isEmpty()) {
             textView_search_no_data.visibility = View.VISIBLE
@@ -140,7 +131,17 @@ class SearchFragment : Fragment() {
         textView_search_results_count.text =
             "${getString(R.string.label_number_of_records)}${records.size}"
 
-        listView_search.adapter = adapter
+        rvSearch.layoutManager = LinearLayoutManager(context)
+        val divider = DividerItemDecoration(
+            context,
+            DividerItemDecoration.VERTICAL
+        )
+
+        val mDivider = ContextCompat.getDrawable(this.requireContext(), R.drawable.list_divider)
+        divider.setDrawable(mDivider!!)
+
+        rvSearch.addItemDecoration(divider)
+        rvSearch.adapter = adapter
 
         progressBar_search.visibility = View.GONE
     }

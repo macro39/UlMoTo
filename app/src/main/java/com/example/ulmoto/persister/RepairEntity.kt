@@ -11,8 +11,9 @@ import java.util.*
 @Entity(tableName = "repair")
 data class RepairEntity(
     @PrimaryKey(autoGenerate = true) val repairId: Int = 0,
-    val recordEntityId: Long = 0,
+    var recordEntityId: Long = 0,
     val description: String = "",
     val dateOfRepair: Date = Calendar.getInstance().time,
-    val price: Double = 0.0
+    val price: Double = 0.0,
+    var images: List<String> = listOf()
 )

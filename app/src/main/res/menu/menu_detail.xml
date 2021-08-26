@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.ulmoto.MainActivity">
+
+    <item
+        android:id="@+id/actionAddImages"
+        android:icon="@drawable/ic_add"
+        android:title="Pridať fotografie"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionCall"
+        android:icon="@drawable/ic_call"
+        android:title="Zavolať na číslo záznamu"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionShare"
+        android:icon="@drawable/ic_share"
+        android:title="Zdielať záznam"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionSetLicencePlate"
+        android:title="Zmeniť EČV"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/actionSetTelephone"
+        android:title="Zmeniť tel. č."
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/actionPickFirstImage"
+        android:title="Načítať prednú stranu TP"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/actionPickSecondImage"
+        android:title="Načítať zadnú stranu TP"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/actionDelete"
+        android:title="Odstrániť záznam"
+        app:showAsAction="never" />
+
+</menu>
