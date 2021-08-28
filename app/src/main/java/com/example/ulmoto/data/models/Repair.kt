@@ -4,12 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
-
-/**
- * Created by Kamil Macek on 22.5.2020.
- */
 @Entity(tableName = "repair")
-data class RepairEntity(
+data class Repair(
     @PrimaryKey(autoGenerate = true) val repairId: Int = 0,
     var recordEntityId: Long = 0,
     val description: String = "",

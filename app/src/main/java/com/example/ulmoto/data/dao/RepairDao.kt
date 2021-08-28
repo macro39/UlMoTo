@@ -1,19 +1,15 @@
 package com.example.ulmoto.data.dao
 
 import androidx.room.*
-import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.data.models.Repair
 
-
-/**
- * Created by Kamil Macek on 23.5.2020.
- */
 @Dao
 interface RepairDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun upsert(repairEntity: RepairEntity): Long
+    suspend fun upsert(repair: Repair): Long
 
     @Delete
-    suspend fun delete(repairEntity: RepairEntity)
+    suspend fun delete(repair: Repair)
 
     @Query("SELECT SUM(price) AS value FROM repair WHERE recordEntityId = :recordId")
     suspend fun getPriceCount(recordId: Long): Double

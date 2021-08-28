@@ -3,10 +3,6 @@ package com.example.ulmoto.data.converters
 import androidx.room.TypeConverter
 import java.util.*
 
-
-/**
- * Created by Kamil Macek on 24.5.2020.
- */
 class DateConverter {
 
     @TypeConverter
@@ -18,5 +14,4 @@ class DateConverter {
     fun dateToTimestamp(date: Date?): Long? {
         return date?.time
     }
-
 }

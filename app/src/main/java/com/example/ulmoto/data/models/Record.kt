@@ -3,12 +3,8 @@ package com.example.ulmoto.data.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
-/**
- * Created by Kamil Macek on 17.5.2020.
- */
 @Entity(tableName = "record")
-data class RecordEntity(
+data class Record(
     @PrimaryKey(autoGenerate = true) val recordId: Long = 0,
     val firstName: String = "",
     val lastName: String = "",

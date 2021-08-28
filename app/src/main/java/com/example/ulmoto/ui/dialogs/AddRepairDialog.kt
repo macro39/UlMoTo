@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.data.models.Repair
 import com.example.ulmoto.showImagePreview
 import com.example.ulmoto.ui.MainActivity
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
@@ -68,7 +68,7 @@ class AddRepairDialog : DialogFragment(R.layout.fragment_add_repair) {
                 return@setOnClickListener
             }
 
-            val repair = RepairEntity(
+            val repair = Repair(
                 description = editText_add_repair_description.text.toString(),
                 dateOfRepair = SimpleDateFormat("dd/MM/yyyy").parse(textView_add_repair_date.text.toString()),
                 price = editText_add_repair_price.text.toString().toDouble(),

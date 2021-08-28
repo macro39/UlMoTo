@@ -19,7 +19,7 @@ import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeRecyclerView
 import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
 import com.example.ulmoto.*
 import com.example.ulmoto.data.models.RecordWithRepairs
-import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.data.models.Repair
 import com.example.ulmoto.ui.MainActivity
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
 import com.example.ulmoto.ui.adapters.RepairAdapter
@@ -81,20 +81,20 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private fun showData() {
         GlobalScope.launch(Dispatchers.Main) {
             textView_detail_last_name.text =
-                selectedRecord.recordEntity.firstName + " " + selectedRecord.recordEntity.lastName
-            textView_detail_licence_plate.text = selectedRecord.recordEntity.licencePlate
-            tvTelephone.text = selectedRecord.recordEntity.telephone ?: "-"
+                selectedRecord.record.firstName + " " + selectedRecord.record.lastName
+            textView_detail_licence_plate.text = selectedRecord.record.licencePlate
+            tvTelephone.text = selectedRecord.record.telephone ?: "-"
 
             val previewImages = arrayListOf<String?>()
 
-            if (selectedRecord.recordEntity.imageFirst != null) {
-                imageView_detail_first.setImageURI(Uri.parse(selectedRecord.recordEntity.imageFirst))
-                previewImages.add(selectedRecord.recordEntity.imageFirst)
+            if (selectedRecord.record.imageFirst != null) {
+                imageView_detail_first.setImageURI(Uri.parse(selectedRecord.record.imageFirst))
+                previewImages.add(selectedRecord.record.imageFirst)
             }
 
-            if (selectedRecord.recordEntity.imageSecond != null) {
-                imageView_detail_second.setImageURI(Uri.parse(selectedRecord.recordEntity.imageSecond))
-                previewImages.add(selectedRecord.recordEntity.imageSecond)
+            if (selectedRecord.record.imageSecond != null) {
+                imageView_detail_second.setImageURI(Uri.parse(selectedRecord.record.imageSecond))
+                previewImages.add(selectedRecord.record.imageSecond)
             }
 
             if (previewImages.isNotEmpty()) {
@@ -118,7 +118,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 val images = if (deleteOldImages) {
                     ArrayList()
                 } else {
-                    ArrayList(selectedRecord.recordEntity.images)
+                    ArrayList(selectedRecord.record.images)
                 }
 
                 selectedMediaList?.forEach {
@@ -128,7 +128,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     }
                 }
 
-                selectedRecord.recordEntity.images = images
+                selectedRecord.record.images = images
                 updateRecord()
             }
     }
@@ -153,14 +153,14 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 true
             }
             R.id.actionCall -> {
-                if (selectedRecord.recordEntity.telephone.isNullOrBlank()) {
+                if (selectedRecord.record.telephone.isNullOrBlank()) {
                     Toast.makeText(context, "Nie je priradené žiadne číslo", Toast.LENGTH_SHORT)
                         .show()
                     return true
                 }
 
                 Intent(Intent.ACTION_DIAL).apply {
-                    data = Uri.parse("tel:" + selectedRecord.recordEntity.telephone)
+                    data = Uri.parse("tel:" + selectedRecord.record.telephone)
                     startActivity(this)
                 }
 
@@ -169,12 +169,12 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             R.id.actionShare -> {
                 val uris = arrayListOf<Uri>()
 
-                if (selectedRecord.recordEntity.imageFirst != null) {
-                    uris.add(Uri.parse("file://" + selectedRecord.recordEntity.imageFirst))
+                if (selectedRecord.record.imageFirst != null) {
+                    uris.add(Uri.parse("file://" + selectedRecord.record.imageFirst))
                 }
 
-                if (selectedRecord.recordEntity.imageSecond != null) {
-                    uris.add(Uri.parse("file://" + selectedRecord.recordEntity.imageSecond))
+                if (selectedRecord.record.imageSecond != null) {
+                    uris.add(Uri.parse("file://" + selectedRecord.record.imageSecond))
                 }
 
                 if (uris.isEmpty()) {
@@ -200,7 +200,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     7,
                     false,
                     {
-                        selectedRecord.recordEntity.licencePlate = it
+                        selectedRecord.record.licencePlate = it
                         updateRecord()
                     })
 
@@ -213,7 +213,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     9,
                     false,
                     {
-                        selectedRecord.recordEntity.telephone = it
+                        selectedRecord.record.telephone = it
                         updateRecord()
                     })
                 true
@@ -232,7 +232,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                     onPositiveButtonClicked = {
                         GlobalScope.launch(Dispatchers.IO) {
                             (activity as MainActivity).database.recordDao()
-                                .delete(selectedRecord.recordEntity)
+                                .delete(selectedRecord.record)
 
                             selectedRecord.repairList.forEach {
                                 (activity as MainActivity).database.repairDao().delete(it)
@@ -255,7 +255,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private fun updateRecord() {
         GlobalScope.launch(Dispatchers.IO) {
-            (activity as MainActivity).database.recordDao().upsert(selectedRecord.recordEntity)
+            (activity as MainActivity).database.recordDao().upsert(selectedRecord.record)
         }
 
         requireContext().toast("Záznam bol úspešne aktualizovaný!")
@@ -263,21 +263,21 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun updateImagesPreview() {
-        if (selectedRecord.recordEntity.images.isEmpty()) {
+        if (selectedRecord.record.images.isEmpty()) {
             tvImagesTitle.hide()
         } else {
             tvImagesTitle.show()
         }
 
         val adapter =
-            ImagePreviewAdapter(selectedRecord.recordEntity.images as MutableList<String>)
+            ImagePreviewAdapter(selectedRecord.record.images as MutableList<String>)
         isDetailImages.create(adapter, lifecycle = lifecycle)
 
         adapter.setOnItemClickListener(object : OnItemClickListener<String> {
             override fun onItemClicked(item: String?, position: Int) {
                 showImagePreview(
                     requireContext(),
-                    selectedRecord.recordEntity.images as ArrayList<String?>,
+                    selectedRecord.record.images as ArrayList<String?>,
                     position
                 )
             }
@@ -290,9 +290,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         if (frontSite) {
-                            this.selectedRecord.recordEntity.imageFirst = data?.data.toString()
+                            this.selectedRecord.record.imageFirst = data?.data.toString()
                         } else {
-                            this.selectedRecord.recordEntity.imageSecond = data?.data.toString()
+                            this.selectedRecord.record.imageSecond = data?.data.toString()
                         }
 
                         updateRecord()
@@ -340,13 +340,13 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         rvRepairs.disableDragDirection(DragDropSwipeRecyclerView.ListOrientation.DirectionFlag.UP)
         rvRepairs.disableDragDirection(DragDropSwipeRecyclerView.ListOrientation.DirectionFlag.DOWN)
 
-        val onItemSwipeListener = object : OnItemSwipeListener<RepairEntity> {
+        val onItemSwipeListener = object : OnItemSwipeListener<Repair> {
             override fun onItemSwiped(
                 position: Int,
                 direction: OnItemSwipeListener.SwipeDirection,
-                item: RepairEntity
+                item: Repair
             ): Boolean {
-                val list = ArrayList<RepairEntity>(selectedRecord.repairList)
+                val list = ArrayList<Repair>(selectedRecord.repairList)
                 list.remove(item)
                 selectedRecord.repairList = list
 
@@ -374,7 +374,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         progressBar.hide()
     }
 
-    fun addRepair(repair: RepairEntity) {
+    fun addRepair(repair: Repair) {
         repair.recordEntityId = selectedRecordId
 
         GlobalScope.launch(Dispatchers.IO) {

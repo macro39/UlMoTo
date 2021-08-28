@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.example.ulmoto.*
-import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.data.models.Record
 import com.example.ulmoto.ui.MainActivity
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
 import com.opensooq.pluto.listeners.OnItemClickListener
@@ -206,7 +206,7 @@ class AddDialog : DialogFragment(R.layout.fragment_add) {
     }
 
     private fun addRecord() = GlobalScope.launch(Dispatchers.IO) {
-        val newRecord = RecordEntity(
+        val newRecord = Record(
             firstName = editText_add_first_name.text.toString().capitalize(),
             lastName = editText_add_last_name.text.toString().capitalize(),
             licencePlate = editText_add_licence_plate.getText(false).toString().uppercase(),

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.data.models.Record
 import com.example.ulmoto.ui.fragments.SearchFragmentDirections
 import kotlinx.android.synthetic.main.item_search_record.view.*
 
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_search_record.view.*
 /**
  * Created by Kamil Macek on 18.5.2020.
  */
-class RecordAdapter(private var records: ArrayList<RecordEntity>) :
+class RecordAdapter(private var records: ArrayList<Record>) :
     RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
 
     inner class RecordViewHolder(view: View) : RecyclerView.ViewHolder(view)

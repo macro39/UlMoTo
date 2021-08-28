@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.data.models.Record
 import com.example.ulmoto.ui.MainActivity
 import com.example.ulmoto.ui.adapters.RecordAdapter
 import com.google.android.material.chip.Chip
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
  */
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
-    private var records: List<RecordEntity> = arrayListOf()
+    private var records: List<Record> = arrayListOf()
     private lateinit var adapter: RecordAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,7 +121,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         progressBar_search.visibility = View.VISIBLE
 
         rvSearch.adapter = null
-        adapter = RecordAdapter(this@SearchFragment.records as ArrayList<RecordEntity>)
+        adapter = RecordAdapter(this@SearchFragment.records as ArrayList<Record>)
 
         if (records.isEmpty()) {
             textView_search_no_data.visibility = View.VISIBLE

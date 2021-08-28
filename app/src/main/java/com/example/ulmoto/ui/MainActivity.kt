@@ -13,7 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.example.ulmoto.R
 import com.example.ulmoto.data.AppDatabase
-import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.data.models.Repair
 import com.example.ulmoto.ui.dialogs.AddDialog
 import com.example.ulmoto.ui.dialogs.AddRepairDialog
 import com.example.ulmoto.ui.fragments.DetailFragment
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun notifyDataSetChanged(repair: RepairEntity? = null) {
+    fun notifyDataSetChanged(repair: Repair? = null) {
         val navHostFragment = supportFragmentManager.primaryNavigationFragment
         currentFragment = navHostFragment!!.childFragmentManager.fragments[0]
 

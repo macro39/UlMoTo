@@ -5,10 +5,6 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.example.ulmoto.data.models.RecordWithRepairs
 
-
-/**
- * Created by Kamil Macek on 22.5.2020.
- */
 @Dao
 interface RecordWithRepairsDao {
     @Transaction

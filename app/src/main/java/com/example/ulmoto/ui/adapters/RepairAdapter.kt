@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeAdapter
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.data.models.Repair
 import com.example.ulmoto.hide
 import com.example.ulmoto.show
 import com.example.ulmoto.showImagePreview
@@ -17,8 +17,8 @@ import java.text.SimpleDateFormat
 /**
  * Created by Kamil Macek on 23.5.2020.
  */
-class RepairAdapter(repairs: ArrayList<RepairEntity> = arrayListOf()) :
-    DragDropSwipeAdapter<RepairEntity, RepairViewHolder>(repairs) {
+class RepairAdapter(repairs: ArrayList<Repair> = arrayListOf()) :
+    DragDropSwipeAdapter<Repair, RepairViewHolder>(repairs) {
 
     inner class RepairViewHolder(view: View) : DragDropSwipeAdapter.ViewHolder(view)
 
@@ -32,14 +32,14 @@ class RepairAdapter(repairs: ArrayList<RepairEntity> = arrayListOf()) :
     override fun getViewHolder(itemView: View): RepairViewHolder = RepairViewHolder(itemView)
 
     override fun getViewToTouchToStartDraggingItem(
-        item: RepairEntity,
+        item: Repair,
         viewHolder: RepairViewHolder,
         position: Int
     ): View? {
         return viewHolder.itemView.tvDescription
     }
 
-    override fun onBindViewHolder(item: RepairEntity, viewHolder: RepairViewHolder, position: Int) {
+    override fun onBindViewHolder(item: Repair, viewHolder: RepairViewHolder, position: Int) {
         viewHolder.itemView.apply {
             tvDescription.text = item.description
 
