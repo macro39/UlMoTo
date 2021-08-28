@@ -1,4 +1,4 @@
-package com.example.ulmoto.persister
+package com.example.ulmoto.data.converters
 
 import androidx.room.TypeConverter
 import java.util.*

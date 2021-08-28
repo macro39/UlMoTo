@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fadeScrollbars="false"
     android:fillViewport="true"
-    tools:context=".detail.DetailFragment">
+    tools:context=".ui.fragments.DetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -1,6 +1,7 @@
-package com.example.ulmoto.persister
+package com.example.ulmoto.data.dao
 
 import androidx.room.*
+import com.example.ulmoto.data.models.RepairEntity
 
 
 /**

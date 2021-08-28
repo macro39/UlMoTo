@@ -1,4 +1,4 @@
-package com.example.ulmoto.add
+package com.example.ulmoto.ui.dialogs
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -11,7 +11,9 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.example.ulmoto.*
-import com.example.ulmoto.persister.RecordEntity
+import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
 import com.opensooq.pluto.listeners.OnItemClickListener
 import kotlinx.android.synthetic.main.carousel_item.view.*
 import kotlinx.android.synthetic.main.fragment_add.*

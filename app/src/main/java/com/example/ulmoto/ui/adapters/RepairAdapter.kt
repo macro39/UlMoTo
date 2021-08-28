@@ -1,15 +1,15 @@
-package com.example.ulmoto.detail
+package com.example.ulmoto.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeAdapter
 import com.example.ulmoto.R
-import com.example.ulmoto.detail.RepairAdapter.RepairViewHolder
+import com.example.ulmoto.data.models.RepairEntity
 import com.example.ulmoto.hide
-import com.example.ulmoto.persister.RepairEntity
 import com.example.ulmoto.show
 import com.example.ulmoto.showImagePreview
+import com.example.ulmoto.ui.adapters.RepairAdapter.RepairViewHolder
 import kotlinx.android.synthetic.main.item_repair_detail.view.*
 import java.text.SimpleDateFormat
 

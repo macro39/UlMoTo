@@ -1,4 +1,4 @@
-package com.example.ulmoto.search
+package com.example.ulmoto.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ulmoto.R
-import com.example.ulmoto.persister.RecordEntity
+import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.ui.fragments.SearchFragmentDirections
 import kotlinx.android.synthetic.main.item_search_record.view.*
 
 

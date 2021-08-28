@@ -1,8 +1,9 @@
-package com.example.ulmoto.persister
+package com.example.ulmoto.data.dao
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
+import com.example.ulmoto.data.models.RecordWithRepairs
 
 
 /**

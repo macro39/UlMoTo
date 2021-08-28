@@ -1,15 +1,15 @@
-package com.example.ulmoto.detail
+package com.example.ulmoto.ui.dialogs
 
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
-import com.example.ulmoto.ImagePreviewAdapter
-import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
-import com.example.ulmoto.persister.RepairEntity
+import com.example.ulmoto.data.models.RepairEntity
 import com.example.ulmoto.showImagePreview
+import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
 import com.opensooq.pluto.listeners.OnItemClickListener
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_add_repair.*

@@ -1,10 +1,17 @@
-package com.example.ulmoto.persister
+package com.example.ulmoto.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.ulmoto.data.converters.DateConverter
+import com.example.ulmoto.data.converters.ImageBitmapString
+import com.example.ulmoto.data.dao.RecordDao
+import com.example.ulmoto.data.dao.RecordWithRepairsDao
+import com.example.ulmoto.data.dao.RepairDao
+import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.data.models.RepairEntity
 
 /**
  * Created by Kamil Macek on 17.5.2020.

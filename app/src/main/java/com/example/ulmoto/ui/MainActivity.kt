@@ -1,4 +1,4 @@
-package com.example.ulmoto
+package com.example.ulmoto.ui
 
 
 import android.os.Bundle
@@ -11,12 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.example.ulmoto.add.AddDialog
-import com.example.ulmoto.detail.AddRepairDialog
-import com.example.ulmoto.detail.DetailFragment
-import com.example.ulmoto.persister.AppDatabase
-import com.example.ulmoto.persister.RepairEntity
-import com.example.ulmoto.search.SearchFragment
+import com.example.ulmoto.R
+import com.example.ulmoto.data.AppDatabase
+import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.ui.dialogs.AddDialog
+import com.example.ulmoto.ui.dialogs.AddRepairDialog
+import com.example.ulmoto.ui.fragments.DetailFragment
+import com.example.ulmoto.ui.fragments.SearchFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 

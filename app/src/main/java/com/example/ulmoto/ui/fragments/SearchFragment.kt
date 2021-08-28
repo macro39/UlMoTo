@@ -1,4 +1,4 @@
-package com.example.ulmoto.search
+package com.example.ulmoto.ui.fragments
 
 import android.os.Bundle
 import android.view.*
@@ -8,9 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.ulmoto.MainActivity
 import com.example.ulmoto.R
-import com.example.ulmoto.persister.RecordEntity
+import com.example.ulmoto.data.models.RecordEntity
+import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.ui.adapters.RecordAdapter
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_search.*

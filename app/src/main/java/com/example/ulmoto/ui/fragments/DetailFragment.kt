@@ -1,4 +1,4 @@
-package com.example.ulmoto.detail
+package com.example.ulmoto.ui.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -18,8 +18,12 @@ import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeRecyclerView
 import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
 import com.example.ulmoto.*
-import com.example.ulmoto.persister.RecordWithRepairs
-import com.example.ulmoto.persister.RepairEntity
+import com.example.ulmoto.data.models.RecordWithRepairs
+import com.example.ulmoto.data.models.RepairEntity
+import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
+import com.example.ulmoto.ui.adapters.RepairAdapter
+import com.example.ulmoto.ui.dialogs.AddRepairDialog
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.opensooq.pluto.listeners.OnItemClickListener
 import kotlinx.android.synthetic.main.fragment_detail.*

@@ -1,4 +1,4 @@
-package com.example.ulmoto.persister
+package com.example.ulmoto.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

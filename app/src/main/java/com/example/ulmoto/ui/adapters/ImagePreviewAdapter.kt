@@ -1,8 +1,9 @@
-package com.example.ulmoto
+package com.example.ulmoto.ui.adapters
 
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.example.ulmoto.R
 import com.opensooq.pluto.base.PlutoAdapter
 import com.opensooq.pluto.base.PlutoViewHolder
 
