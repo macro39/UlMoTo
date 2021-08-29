@@ -6,18 +6,20 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.Record
+import com.example.ulmoto.db.models.Record
 import com.example.ulmoto.ui.fragments.SearchFragmentDirections
 import kotlinx.android.synthetic.main.item_search_record.view.*
 
-
-/**
- * Created by Kamil Macek on 18.5.2020.
- */
 class RecordAdapter(private var records: ArrayList<Record>) :
     RecyclerView.Adapter<RecordAdapter.RecordViewHolder>() {
 
     inner class RecordViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    fun submitList(newData: List<Record>) {
+        records.clear()
+        records.addAll(newData)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
         return RecordViewHolder(

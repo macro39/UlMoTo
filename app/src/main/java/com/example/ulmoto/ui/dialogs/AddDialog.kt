@@ -9,29 +9,29 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.example.ulmoto.*
-import com.example.ulmoto.data.models.Record
-import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.db.models.Record
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
+import com.example.ulmoto.ui.viewmodels.MainViewModel
 import com.opensooq.pluto.listeners.OnItemClickListener
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.carousel_item.view.*
 import kotlinx.android.synthetic.main.fragment_add.*
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
-
-/**
- * Created by Kamil Macek on 18.5.2020.
- */
+@AndroidEntryPoint
 class AddDialog : DialogFragment(R.layout.fragment_add) {
 
     private val imagePathList: ArrayList<Uri> = arrayListOf()
 
     private val images: ArrayList<String> = arrayListOf()
+
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -175,37 +175,32 @@ class AddDialog : DialogFragment(R.layout.fragment_add) {
         dialog!!.window!!.attributes = params as android.view.WindowManager.LayoutParams
     }
 
-    private fun checkLicencePlateAlreadyAdded() = GlobalScope.launch(Dispatchers.IO) {
+    private fun checkLicencePlateAlreadyAdded() = GlobalScope.launch(Dispatchers.Main) {
         val licencePlate = editText_add_licence_plate.getText(false).toString().toUpperCase()
 
-        val sameRecords =
-            (context as MainActivity).database.recordDao().getAllByLicencePlate(licencePlate)
+        if (viewModel.checkLicencePlateAlreadyExists(licencePlate)) {
+            val alertDialog = AlertDialog.Builder(this@AddDialog.requireContext())
+            alertDialog.setTitle("Upozornenie")
+            alertDialog.setMessage("Záznam s EČV vozidla $licencePlate už existuje. Prajete si pokračovať a uložiť tento záznam?")
 
-        if (sameRecords.isNotEmpty()) {
-            withContext(Dispatchers.Main) {
-                val alertDialog = AlertDialog.Builder(this@AddDialog.requireContext())
-                alertDialog.setTitle("Upozornenie")
-                alertDialog.setMessage("Záznam s EČV vozidla $licencePlate už existuje. Prajete si pokračovať a uložiť tento záznam?")
-
-                alertDialog.setPositiveButton("Áno") { dialog, _ ->
-                    dialog.dismiss()
-                    addRecord()
-                }
-
-                alertDialog.setNegativeButton("Nie") { dialog, _ ->
-                    dialog.dismiss()
-                    editText_add_licence_plate.requestFocus()
-                    return@setNegativeButton
-                }
-
-                alertDialog.show()
+            alertDialog.setPositiveButton("Áno") { dialog, _ ->
+                dialog.dismiss()
+                addRecord()
             }
+
+            alertDialog.setNegativeButton("Nie") { dialog, _ ->
+                dialog.dismiss()
+                editText_add_licence_plate.requestFocus()
+                return@setNegativeButton
+            }
+
+            alertDialog.show()
         } else {
             addRecord()
         }
     }
 
-    private fun addRecord() = GlobalScope.launch(Dispatchers.IO) {
+    private fun addRecord() {
         val newRecord = Record(
             firstName = editText_add_first_name.text.toString().capitalize(),
             lastName = editText_add_last_name.text.toString().capitalize(),
@@ -227,19 +222,15 @@ class AddDialog : DialogFragment(R.layout.fragment_add) {
             }
         }
 
-        (context as MainActivity).database.recordDao().upsert(newRecord)
+        viewModel.upsertRecord(newRecord)
 
-        withContext(Dispatchers.Main) {
-            Toast.makeText(
-                this@AddDialog.requireContext(),
-                "Záznam bol úspešne pridaný!",
-                Toast.LENGTH_SHORT
-            ).show()
+        Toast.makeText(
+            this@AddDialog.requireContext(),
+            "Záznam bol úspešne pridaný!",
+            Toast.LENGTH_SHORT
+        ).show()
 
-            (context as MainActivity).notifyDataSetChanged()
-
-            this@AddDialog.dismiss()
-        }
+        this@AddDialog.dismiss()
     }
 
     private fun displayImage(uri: Uri) {

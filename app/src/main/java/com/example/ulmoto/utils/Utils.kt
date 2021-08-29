@@ -6,6 +6,12 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.stfalcon.imageviewer.StfalconImageViewer
 
+enum class FilterBy {
+    FIRST_NAME,
+    LAST_NAME,
+    LICENCE_PLATE
+}
+
 fun showImagePreview(context: Context, images: ArrayList<String?>, position: Int = 0) {
     if (images.isEmpty()) {
         Toast.makeText(context, "Žiadne fotografie neboli nájdené", Toast.LENGTH_SHORT).show()

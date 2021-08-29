@@ -6,34 +6,36 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ulmoto.FilterBy
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.Record
-import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.db.models.Record
+import com.example.ulmoto.hide
+import com.example.ulmoto.show
 import com.example.ulmoto.ui.adapters.RecordAdapter
+import com.example.ulmoto.ui.viewmodels.MainViewModel
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.collect
 
-
-/**
- * Created by Kamil Macek on 17.5.2020.
- */
+@AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private var records: List<Record> = arrayListOf()
     private lateinit var adapter: RecordAdapter
 
+    private val viewModel: MainViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        reloadAllRecordsFromDatabase()
+        updateListViewAdapter()
 
         button_search.setOnClickListener {
             filterData()
@@ -66,13 +68,15 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_reload -> {
+                progressBar_search.show()
+                viewModel.loadRecords()
+
                 Toast.makeText(
                     this.requireContext(),
                     "Boli načítané všetky záznamy",
                     Toast.LENGTH_SHORT
                 ).show()
 
-                reloadAllRecordsFromDatabase()
                 editText_search_filter.setText("", TextView.BufferType.EDITABLE)
                 true
             }
@@ -81,48 +85,55 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     }
 
     private fun filterData() {
-        progressBar_search.visibility = View.VISIBLE
+        progressBar_search.show()
         val id = chipGroup_search_filter.checkedChipId
 
-        GlobalScope.launch(Dispatchers.IO) {
-            when (id) {
-                R.id.chip_search_first_name -> {
-                    records = (activity as MainActivity).database.recordDao()
-                        .getAllByFirstName(editText_search_filter.text.toString())
-                }
-                R.id.chip_search_last_name -> {
-                    records = (activity as MainActivity).database.recordDao()
-                        .getAllByLastName(editText_search_filter.text.toString())
-                }
-                R.id.chip_search_licence_plate -> {
-                    records = (activity as MainActivity).database.recordDao()
-                        .getAllByLicencePlate(editText_search_filter.text.toString())
-                }
+        val searchText = editText_search_filter.text.toString()
+        when (id) {
+            R.id.chip_search_first_name -> {
+                viewModel.filter(FilterBy.FIRST_NAME, searchText)
             }
-
-            withContext(Dispatchers.Main) {
-                updateListViewAdapter()
+            R.id.chip_search_last_name -> {
+                viewModel.filter(FilterBy.LAST_NAME, searchText)
             }
-        }
-    }
-
-    fun reloadAllRecordsFromDatabase() {
-        editText_search_filter.setText("", TextView.BufferType.EDITABLE)
-        GlobalScope.launch(Dispatchers.IO) {
-            records = (activity as MainActivity).database.recordDao().getAll()
-
-            withContext(Dispatchers.Main) {
-                updateListViewAdapter()
+            R.id.chip_search_licence_plate -> {
+                viewModel.filter(FilterBy.LICENCE_PLATE, searchText)
             }
         }
     }
 
     private fun updateListViewAdapter() {
-        progressBar_search.visibility = View.VISIBLE
+        progressBar_search.show()
 
         rvSearch.adapter = null
         adapter = RecordAdapter(this@SearchFragment.records as ArrayList<Record>)
 
+        updateViews()
+
+        rvSearch.layoutManager = LinearLayoutManager(context)
+        val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+
+        val mDivider = ContextCompat.getDrawable(this.requireContext(), R.drawable.list_divider)
+        divider.setDrawable(mDivider!!)
+
+        rvSearch.addItemDecoration(divider)
+        rvSearch.adapter = adapter
+
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.records.collect {
+                progressBar_search.show()
+                records = it
+                updateViews()
+
+                adapter.submitList(records)
+                progressBar_search.hide()
+            }
+        }
+
+        progressBar_search.hide()
+    }
+
+    private fun updateViews() {
         if (records.isEmpty()) {
             textView_search_no_data.visibility = View.VISIBLE
         } else {
@@ -131,19 +142,5 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         textView_search_results_count.text =
             "${getString(R.string.label_number_of_records)}${records.size}"
-
-        rvSearch.layoutManager = LinearLayoutManager(context)
-        val divider = DividerItemDecoration(
-            context,
-            DividerItemDecoration.VERTICAL
-        )
-
-        val mDivider = ContextCompat.getDrawable(this.requireContext(), R.drawable.list_divider)
-        divider.setDrawable(mDivider!!)
-
-        rvSearch.addItemDecoration(divider)
-        rvSearch.adapter = adapter
-
-        progressBar_search.visibility = View.GONE
     }
 }

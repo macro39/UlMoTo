@@ -1,4 +1,4 @@
-package com.example.ulmoto.data.models
+package com.example.ulmoto.db.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

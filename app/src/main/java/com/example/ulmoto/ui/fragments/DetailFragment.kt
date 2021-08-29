@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,24 +20,19 @@ import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeRecyclerView
 import com.ernestoyaquello.dragdropswiperecyclerview.listener.OnItemSwipeListener
 import com.example.ulmoto.*
-import com.example.ulmoto.data.models.RecordWithRepairs
-import com.example.ulmoto.data.models.Repair
-import com.example.ulmoto.ui.MainActivity
+import com.example.ulmoto.db.models.RecordWithRepairs
+import com.example.ulmoto.db.models.Repair
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
 import com.example.ulmoto.ui.adapters.RepairAdapter
 import com.example.ulmoto.ui.dialogs.AddRepairDialog
+import com.example.ulmoto.ui.viewmodels.MainViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.opensooq.pluto.listeners.OnItemClickListener
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.collect
 
-
-/**
- * Created by Kamil Macek on 22.5.2020.
- */
+@AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
 
     private val args: DetailFragmentArgs by navArgs()
@@ -44,9 +41,8 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     private var selectedRecordId: Long = -1
 
     private lateinit var repairAdapter: RepairAdapter
-//    private var repairs: ArrayList<RepairEntity> = arrayListOf()
 
-    private var priceCount: Double = 0.0
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,43 +65,49 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
 
         selectedRecordId = args.recordId
 
-        GlobalScope.launch(Dispatchers.IO) {
-            selectedRecord =
-                (context as MainActivity).database.recordWithRepairsDao().getRecordWithRepairs(
-                    selectedRecordId
-                )
-            showData()
-        }
+        viewModel.selectRecord(selectedRecordId)
+
+        setupRepairRecyclerView()
     }
 
     private fun showData() {
-        GlobalScope.launch(Dispatchers.Main) {
-            textView_detail_last_name.text =
-                selectedRecord.record.firstName + " " + selectedRecord.record.lastName
-            textView_detail_licence_plate.text = selectedRecord.record.licencePlate
-            tvTelephone.text = selectedRecord.record.telephone ?: "-"
+        textView_detail_last_name.text =
+            selectedRecord.record.firstName + " " + selectedRecord.record.lastName
+        textView_detail_licence_plate.text = selectedRecord.record.licencePlate
+        tvTelephone.text = selectedRecord.record.telephone ?: "-"
 
-            val previewImages = arrayListOf<String?>()
+        tvRepairsCount.text =
+            "${getString(R.string.label_number_of_records)}${selectedRecord.repairList.size}"
 
-            if (selectedRecord.record.imageFirst != null) {
-                imageView_detail_first.setImageURI(Uri.parse(selectedRecord.record.imageFirst))
-                previewImages.add(selectedRecord.record.imageFirst)
-            }
+        textView_detail_price_count.text = selectedRecord.getRepairsPrice().toString() + "€"
 
-            if (selectedRecord.record.imageSecond != null) {
-                imageView_detail_second.setImageURI(Uri.parse(selectedRecord.record.imageSecond))
-                previewImages.add(selectedRecord.record.imageSecond)
-            }
+        if (selectedRecord.repairList.isEmpty()) {
+            textView_detail_no_records.visibility = View.VISIBLE
+        } else {
+            textView_detail_no_records.visibility = View.GONE
+        }
 
-            if (previewImages.isNotEmpty()) {
-                imageView_detail_first.setOnClickImagePreview(previewImages, 0)
+        val previewImages = arrayListOf<String?>()
+
+        if (selectedRecord.record.imageFirst != null) {
+            imageView_detail_first.setImageURI(Uri.parse(selectedRecord.record.imageFirst))
+            previewImages.add(selectedRecord.record.imageFirst)
+        }
+
+        if (selectedRecord.record.imageSecond != null) {
+            imageView_detail_second.setImageURI(Uri.parse(selectedRecord.record.imageSecond))
+            previewImages.add(selectedRecord.record.imageSecond)
+        }
+
+        if (previewImages.isNotEmpty()) {
+            imageView_detail_first.setOnClickImagePreview(previewImages, 0)
+
+            if (previewImages.size == 2) {
                 imageView_detail_second.setOnClickImagePreview(previewImages, 1)
             }
-
-            updatePriceCount()
-            updateImagesPreview()
-            updateRepairsRv()
         }
+
+        updateImagesPreview()
     }
 
     private fun pickImages(deleteOldImages: Boolean) {
@@ -230,20 +232,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 this.requireContext().yesNoDialog("Upozornenie",
                     "Prajete si odstrániť záznam spolu so všetkými opravami?",
                     onPositiveButtonClicked = {
-                        GlobalScope.launch(Dispatchers.IO) {
-                            (activity as MainActivity).database.recordDao()
-                                .delete(selectedRecord.record)
-
-                            selectedRecord.repairList.forEach {
-                                (activity as MainActivity).database.repairDao().delete(it)
-                            }
-
-                            withContext(Dispatchers.Main) {
-                                val action =
-                                    DetailFragmentDirections.actionDetailFragmentToSearchFragment()
-                                findNavController().navigate(action)
-                            }
-                        }
+                        viewModel.delete(selectedRecord)
+                        val action =
+                            DetailFragmentDirections.actionDetailFragmentToSearchFragment()
+                        findNavController().navigate(action)
                     },
                     onNegativeButtonClicked = {})
 
@@ -254,12 +246,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
     }
 
     private fun updateRecord() {
-        GlobalScope.launch(Dispatchers.IO) {
-            (activity as MainActivity).database.recordDao().upsert(selectedRecord.record)
-        }
+        viewModel.upsertRecord(selectedRecord.record)
 
         requireContext().toast("Záznam bol úspešne aktualizovaný!")
-        showData()
     }
 
     private fun updateImagesPreview() {
@@ -308,31 +297,9 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
             }
     }
 
-    private fun updatePriceCount() = GlobalScope.launch(Dispatchers.IO) {
-        priceCount = try {
-            (activity as MainActivity).database.repairDao().getPriceCount(selectedRecordId)
-        } catch (e: NullPointerException) {
-            0.0
-        }
-
-        withContext(Dispatchers.Main) {
-            textView_detail_price_count.text = priceCount.toString() + "€"
-        }
-    }
-
-    private fun updateRepairsRv() = GlobalScope.launch(Dispatchers.Main) {
-        progressBar.show()
-
-        rvRepairs.swipeListener = null
-
-        repairAdapter = RepairAdapter(ArrayList(selectedRecord.repairList))
+    private fun setupRepairRecyclerView() {
+        repairAdapter = RepairAdapter(arrayListOf())
         repairAdapter.setHasStableIds(true)
-
-        if (selectedRecord.repairList.isEmpty()) {
-            textView_detail_no_records.visibility = View.VISIBLE
-        } else {
-            textView_detail_no_records.visibility = View.GONE
-        }
 
         rvRepairs.orientation =
             DragDropSwipeRecyclerView.ListOrientation.VERTICAL_LIST_WITH_VERTICAL_DRAGGING
@@ -346,22 +313,7 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
                 direction: OnItemSwipeListener.SwipeDirection,
                 item: Repair
             ): Boolean {
-                val list = ArrayList<Repair>(selectedRecord.repairList)
-                list.remove(item)
-                selectedRecord.repairList = list
-
-                GlobalScope.launch(Dispatchers.IO) {
-                    (activity as MainActivity).database.repairDao().delete(item)
-
-                    selectedRecord =
-                        (context as MainActivity).database.recordWithRepairsDao()
-                            .getRecordWithRepairs(
-                                selectedRecordId
-                            )
-
-                    updatePriceCount()
-                }
-
+                viewModel.delete(item)
                 return false
             }
         }
@@ -371,25 +323,19 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         rvRepairs.layoutManager = LinearLayoutManager(context)
         rvRepairs.adapter = repairAdapter
 
-        progressBar.hide()
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.selectedRecord.collect {
+                progressBar.show()
+                selectedRecord = it
+                showData()
+                repairAdapter.submitList(selectedRecord.repairList)
+                progressBar.hide()
+            }
+        }
     }
 
     fun addRepair(repair: Repair) {
         repair.recordEntityId = selectedRecordId
-
-        GlobalScope.launch(Dispatchers.IO) {
-            (activity as MainActivity).database.repairDao().upsert(repair)
-
-            selectedRecord =
-                (context as MainActivity).database.recordWithRepairsDao().getRecordWithRepairs(
-                    selectedRecordId
-                )
-
-            withContext(Dispatchers.Main) {
-                repairAdapter.dataSet = ArrayList(selectedRecord.repairList)
-            }
-
-            updatePriceCount()
-        }
+        viewModel.upsertRepair(repair)
     }
 }

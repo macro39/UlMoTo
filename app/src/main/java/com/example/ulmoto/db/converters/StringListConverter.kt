@@ -1,4 +1,4 @@
-package com.example.ulmoto.data.converters
+package com.example.ulmoto.db.converters
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

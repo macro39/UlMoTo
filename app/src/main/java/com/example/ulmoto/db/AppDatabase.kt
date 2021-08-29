@@ -1,17 +1,17 @@
-package com.example.ulmoto.data
+package com.example.ulmoto.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.ulmoto.data.converters.DateConverter
-import com.example.ulmoto.data.converters.StringListConverter
-import com.example.ulmoto.data.dao.RecordDao
-import com.example.ulmoto.data.dao.RecordWithRepairsDao
-import com.example.ulmoto.data.dao.RepairDao
-import com.example.ulmoto.data.models.Record
-import com.example.ulmoto.data.models.Repair
+import com.example.ulmoto.db.converters.DateConverter
+import com.example.ulmoto.db.converters.StringListConverter
+import com.example.ulmoto.db.dao.RecordDao
+import com.example.ulmoto.db.dao.RecordWithRepairsDao
+import com.example.ulmoto.db.dao.RepairDao
+import com.example.ulmoto.db.models.Record
+import com.example.ulmoto.db.models.Repair
 
 @Database(entities = [Repair::class, Record::class], version = 1, exportSchema = true)
 @TypeConverters(DateConverter::class, StringListConverter::class)

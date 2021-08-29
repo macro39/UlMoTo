@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.anilokcun.uwmediapicker.UwMediaPicker
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.Repair
+import com.example.ulmoto.db.models.Repair
 import com.example.ulmoto.showImagePreview
 import com.example.ulmoto.ui.MainActivity
 import com.example.ulmoto.ui.adapters.ImagePreviewAdapter
@@ -17,10 +17,6 @@ import kotlinx.android.synthetic.main.fragment_add_repair.btnPickImages
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-/**
- * Created by Kamil Macek on 22.5.2020.
- */
 class AddRepairDialog : DialogFragment(R.layout.fragment_add_repair) {
 
     private val images: ArrayList<String> = arrayListOf()
@@ -75,7 +71,7 @@ class AddRepairDialog : DialogFragment(R.layout.fragment_add_repair) {
                 images = images
             )
 
-            (context as MainActivity).notifyDataSetChanged(repair)
+            (activity as MainActivity).notifyDataSetChanged(repair)
 
             this.dismiss()
         }

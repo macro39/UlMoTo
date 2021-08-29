@@ -1,4 +1,4 @@
-package com.example.ulmoto.data.models
+package com.example.ulmoto.db.models
 
 import androidx.room.Embedded
 import androidx.room.Relation
@@ -10,4 +10,12 @@ data class RecordWithRepairs(
         entityColumn = "recordEntityId"
     )
     var repairList: List<Repair>
-)
+) {
+    fun getRepairsPrice(): Double {
+        var sum = 0.0
+        repairList.forEach {
+            sum += it.price
+        }
+        return sum
+    }
+}

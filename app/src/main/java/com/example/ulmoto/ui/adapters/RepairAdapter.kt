@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeAdapter
 import com.example.ulmoto.R
-import com.example.ulmoto.data.models.Repair
+import com.example.ulmoto.db.models.Repair
 import com.example.ulmoto.hide
 import com.example.ulmoto.show
 import com.example.ulmoto.showImagePreview
@@ -13,14 +13,17 @@ import com.example.ulmoto.ui.adapters.RepairAdapter.RepairViewHolder
 import kotlinx.android.synthetic.main.item_repair_detail.view.*
 import java.text.SimpleDateFormat
 
-
-/**
- * Created by Kamil Macek on 23.5.2020.
- */
-class RepairAdapter(repairs: ArrayList<Repair> = arrayListOf()) :
+class RepairAdapter(
+    repairs: ArrayList<Repair> = arrayListOf()
+) :
     DragDropSwipeAdapter<Repair, RepairViewHolder>(repairs) {
 
     inner class RepairViewHolder(view: View) : DragDropSwipeAdapter.ViewHolder(view)
+
+    fun submitList(newData: List<Repair>) {
+        dataSet = newData
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepairViewHolder {
         return RepairViewHolder(
@@ -47,6 +50,10 @@ class RepairAdapter(repairs: ArrayList<Repair> = arrayListOf()) :
                 tvExpandButtonTitle.show()
             } else {
                 tvExpandButtonTitle.hide()
+            }
+
+            tvExpandButtonTitle.setOnClickListener {
+                expand_collapse.callOnClick()
             }
 
             tvDescription.setOnExpandStateChangeListener { _, isExpanded ->

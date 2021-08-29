@@ -211,6 +211,16 @@
             app:layout_constraintTop_toTopOf="@+id/textView6" />
 
         <TextView
+            android:id="@+id/tvRepairsCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_number_of_records"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
             android:id="@+id/textView_detail_no_records"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -225,12 +235,18 @@
         <com.ernestoyaquello.dragdropswiperecyclerview.DragDropSwipeRecyclerView
             android:id="@+id/rvRepairs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:fadeScrollbars="false"
+            android:scrollbars="vertical"
             app:behind_swiped_item_bg_color="@color/swipeBehindBackground"
             app:behind_swiped_item_icon="@drawable/ic_delete"
             app:divider="@drawable/list_divider"
             app:item_layout="@layout/item_repair_detail"
-            app:layout_constraintTop_toBottomOf="@+id/button_detail_add_repair"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_max="400dp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvRepairsCount"
             tools:listitem="@layout/item_repair_detail" />
 
         <androidx.constraintlayout.widget.Guideline
