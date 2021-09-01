@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.ulmoto.FilterBy
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment(R.layout.fragment_search) {
@@ -119,14 +122,16 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         rvSearch.addItemDecoration(divider)
         rvSearch.adapter = adapter
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.records.collect {
-                progressBar_search.show()
-                records = it
-                updateViews()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.records.collect {
+                    progressBar_search.show()
+                    records = it
+                    updateViews()
 
-                adapter.submitList(records)
-                progressBar_search.hide()
+                    adapter.submitList(records)
+                    progressBar_search.hide()
+                }
             }
         }
 

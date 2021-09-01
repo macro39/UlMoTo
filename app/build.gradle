@@ -6,7 +6,7 @@ apply plugin: "androidx.navigation.safeargs"
 apply plugin: "dagger.hilt.android.plugin"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
@@ -92,6 +92,9 @@ dependencies {
 
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha03'
 
     implementation 'com.google.dagger:hilt-android:2.38.1'
     kapt 'com.google.dagger:hilt-android-compiler:2.38.1'

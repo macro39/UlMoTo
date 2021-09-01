@@ -12,7 +12,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +33,7 @@ import com.opensooq.pluto.listeners.OnItemClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailFragment : Fragment(R.layout.fragment_detail) {
@@ -323,13 +326,15 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         rvRepairs.layoutManager = LinearLayoutManager(context)
         rvRepairs.adapter = repairAdapter
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.selectedRecord.collect {
-                progressBar.show()
-                selectedRecord = it
-                showData()
-                repairAdapter.submitList(selectedRecord.repairList)
-                progressBar.hide()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectedRecord.collect {
+                    progressBar.show()
+                    selectedRecord = it
+                    showData()
+                    repairAdapter.submitList(selectedRecord.repairList)
+                    progressBar.hide()
+                }
             }
         }
     }
