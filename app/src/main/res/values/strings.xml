@@ -24,4 +24,12 @@
     <string name="label_registration_book_front">TP predná strana</string>
     <string name="label_registration_book_back">TP zadná strana</string>
     <string name="label_repair_date">Dátum opravy</string>
+
+    <string name="title_choose_image_provider">Načítanie fotografie</string>
+    <string name="action_cancel">Zrušiť</string>
+    <string name="title_gallery">Galéria</string>
+    <string name="title_camera">Kamera</string>
+
+    <string name="uwmediapicker_toolbar_title_image_library">Fotografie</string>
+    <string name="uwmediapicker_toolbar_done">Dokončiť</string>
 </resources>
